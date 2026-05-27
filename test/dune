@@ -1,0 +1,3 @@
+(executable
+ (name fuzz)
+ (libraries hs_code afl-persistent))
