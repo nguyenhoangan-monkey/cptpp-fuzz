@@ -11,3 +11,5 @@
 .DS_Store
 *.swp
 *~
+output_fail.txt
+output_pass.txt

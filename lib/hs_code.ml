@@ -1,51 +1,56 @@
-(* hs_code.ml *)
-
+(* exposing the config *)
 module type Bounded_int_config = sig
   val min : int
   val max : int
   val name : string
 end
 
-(* Note: single digit printed and string are explicitly disallowed in HS code *)
-(* Note: HS code must be XX.XX.XX, any lower and is rejected *)
-module Make_bounded_int (Config : Bounded_int_config) : sig
+module Bounded_int (Config : Bounded_int_config) : sig
   type t
 
-  val make : string -> (t, string) result
+  val of_string : string -> (t, string) result
   val to_int : t -> int
 end = struct
   type t = int
 
-  let make s =
-    if String.length s <> 2 then
-      Error (Printf.sprintf "%s segment must be exactly 2 characters" Config.name)
-    else
-      match int_of_string_opt s with
-      | None -> 
-          Error (Printf.sprintf "%s segment must contain numeric digits only" Config.name)
-      | Some n ->
-          if n >= Config.min && n <= Config.max then 
-            Ok n
-          else
-            Error (Printf.sprintf "%s must be between %02d and %02d" Config.name Config.min Config.max)
+  (* Here we parse the 2 char string, check digit, and manually parse digit to int *)
+  (* Note: single digit printed and string are explicitly disallowed in HS code *)
+  (* Note: HS code must be XX.XX.XX, any lower and is rejected *)
+  let of_string s =
+    let open Result.Syntax in
+    
+    (* internal parser. Error () is an unit to type match *)
+    let parse_digits s =
+      let* () = if String.length s = 2 then Ok () else Error () in
+      let* c1 = match s.[0] with '0' .. '9' as c -> Ok c | _ -> Error () in
+      let* c2 = match s.[1] with '0' .. '9' as c -> Ok c | _ -> Error () in
+      
+      let n = (int_of_char c1 - 48) * 10 + (int_of_char c2 - 48) in
+      if n >= Config.min && n <= Config.max then Ok n else Error ()
+    in
+
+    (* Error accumulator *)
+    match parse_digits s with
+    | Ok n -> Ok n
+    | Error () -> Error "Part of HS code must be exactly 2 digits"
 
   let to_int n = n
 end
 
 (* calling the functor *)
-module Chapter = Make_bounded_int (struct
+module Chapter = Bounded_int (struct
   let min = 1
   let max = 99
   let name = "Chapter"
 end)
 
-module Heading = Make_bounded_int (struct
+module Heading = Bounded_int (struct
   let min = 0
   let max = 99
   let name = "Heading"
 end)
 
-module Subheading = Make_bounded_int (struct
+module Subheading = Bounded_int (struct
   let min = 0
   let max = 99
   let name = "Subheading"
@@ -63,12 +68,12 @@ end)
 module Extension : sig
   type t
 
-  val make : string -> (t option, string) result
+  val of_string : string -> (t option, string) result
   val to_string : t -> string
 end = struct
   type t = string
 
-  let make s =
+  let of_string s =
     match String.length s with
     | 0 -> Ok None
     | len when len > 16 -> Error "Extension exceeded 16 valid characters"
@@ -103,10 +108,10 @@ let of_string s =
       |> String.trim 
     in
 
-    let+ chapter = Chapter.make c_raw
-    and+ heading = Heading.make h_raw
-    and+ subheading = Subheading.make s_raw
-    and+ extension = Extension.make e_raw in
+    let+ chapter = Chapter.of_string c_raw
+    and+ heading = Heading.of_string h_raw
+    and+ subheading = Subheading.of_string s_raw
+    and+ extension = Extension.of_string e_raw in
     { chapter; heading; subheading; extension }
 
 

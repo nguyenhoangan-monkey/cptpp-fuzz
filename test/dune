@@ -1,3 +1,9 @@
 (executable
  (name fuzz)
- (libraries hs_code afl-persistent))
+ (libraries hs_code afl-persistent)
+ (public_name cptpp-fuzz)
+ (package cptpp-fuzz))
+
+(executable
+ (name check_queue)
+ (libraries hs_code))
