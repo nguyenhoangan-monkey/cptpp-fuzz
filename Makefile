@@ -38,10 +38,8 @@ fuzz: build
 	export AFL_SKIP_CPUFREQ=1; \
 	export AFL_POST_PROCESS_KEEP_ORIGINAL=1; \
 	export AFL_MAP_SIZE=256000; \
-	afl-fuzz -t 50 -d -P explore -x test/hs_code.dict -i input -o output -S cpu2 $(FUZZ) @@ > /dev/null 2>&1 & \
-	afl-fuzz -t 50 -d -P explore -x test/hs_code.dict -i input -o output -S cpu3 $(FUZZ) @@ > /dev/null 2>&1 & \
-	afl-fuzz -t 50 -d -P explore -x test/hs_code.dict -i input -o output -S cpu4 $(FUZZ) @@ > /dev/null 2>&1 & \
-	afl-fuzz -t 50 -P explore -x test/hs_code.dict -i input -o output -M main $(FUZZ) @@
+	afl-fuzz -t 50 -P explore -x test/hs_code.dict -i input -o output -S cpu2 $(FUZZ) > /dev/null 2>&1 & \
+	afl-fuzz -t 50 -P explore -x test/hs_code.dict -i input -o output -M main $(FUZZ)
 
 status:
 	@if [ -d output ]; then afl-whatsup output/; else echo "No active fuzzing session found."; fi
