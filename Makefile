@@ -3,7 +3,7 @@ DUNE = opam exec --switch=5.4.1+afl -- dune
 FUZZ = ./_build/default/test/fuzz.exe
 
 # List all targets here
-TARGETS = setup build fuzz dump kill clean
+TARGETS = setup build seed fuzz dump kill clean
 
 .PHONY: all help $(TARGETS)
 
@@ -31,6 +31,10 @@ setup:
 
 build:
 	$(DUNE) build test/fuzz.exe --instrument-with afl
+
+seed:
+	@echo "Purging and regenerating pristine AFL input seeds..."
+	$(DUNE) exec test/seed_generator.exe
 
 fuzz: build
 	@mkdir -p input

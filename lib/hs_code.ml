@@ -192,7 +192,9 @@ let extension_validator raw_s uchars =
               (match ctx with
               | Inside _ -> Error "Nested brackets are not allowed"
               | Outside ->
-                  let expected_close = if c = '[' then ']' else ')' in
+                  let expected_close = begin match c with
+                  | '[' -> ']'
+                  | _   -> ')' end in
                   loop (Inside (expected_close, false)) None rest)
 
           | ']' | ')' ->
@@ -224,26 +226,24 @@ let extension_parser uchars =
   let rec loop acc count chars =
     match chars with
     | [] ->
-        (match count with
+        begin match count with
         | 0 -> Ok None
         | c when c > 16 -> Error "Flattened extension exceeds 16-character ceiling"
-        | _ ->
-            let final_str = String.of_seq (List.to_seq (List.rev acc)) in
-            Ok (Some final_str))
+        | _ -> Ok (Some (String.of_seq (List.to_seq (List.rev acc))))
+        end
 
     | u :: rest ->
-        let code = Uchar.to_int u in
-        if code < 0 || code > 127 then
-          loop acc count rest
-        else
-          let c = Char.chr code in
-          match c with
-          | 'a' .. 'z' ->
-              loop (Char.uppercase_ascii c :: acc) (count + 1) rest
-          | 'A' .. 'Z' | '0' .. '9' ->
-              loop (c :: acc) (count + 1) rest
-          | _ ->
-              loop acc count rest
+        let c = Char.chr (Uchar.to_int u) in
+        match c with
+        | 'a' .. 'z' ->
+            loop (Char.uppercase_ascii c :: acc) (count + 1) rest
+        | 'A' .. 'Z' | '0' .. '9' ->
+            loop (c :: acc) (count + 1) rest
+        | ' ' | '[' | ']' | '(' | ')' | '-' | '/' | ':' | '_' | '.' ->
+            (* ignore valid structural formatting tokens *)
+            loop acc count rest
+        | _ ->
+            Error (Printf.sprintf "Unexpected validation leak: illegal character '%c'" c)
   in
   loop [] 0 uchars
 

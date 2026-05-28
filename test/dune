@@ -7,3 +7,7 @@
 (executable
  (name check_queue)
  (libraries hs_code))
+
+(executable
+ (name seed_generator)
+ (modes exe))

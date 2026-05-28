@@ -1,29 +1,33 @@
-# --- HS Code Structural Digits ---
-# Boundaries to trigger your Bounded_int logic
-digit_00="00"
-digit_01="01"
-digit_99="99"
+# === Numeric Boundaries ===
+# 00 triggers the Chapter min check (min=1)
+ch_low="00"
+# 01 and 99 check the exact valid boundary edges
+ch_valid_min="01"
+val_max="99"
 
-# Common valid 2-digit chunks
-chunk_10="10"
-chunk_45="45"
+# === Security & Encoding ===
+# Triggers the embedded null byte security exception
+null_mid="A\x00B"
+# Triggers the non-ASCII / multi-byte check (> 127 code point)
+non_ascii="\xc3\x82"
 
-# --- Extension Delimiters & Valid Chars ---
-# Giving the fuzzer exactly what is_valid_hs_ext_char looks for
-ext_dot="."
-ext_dash="-"
-ext_slash="/"
-ext_underscore="_"
-ext_colon=":"
-ext_space=" "
-ext_star="*"
+# === Prefix Parser Sequence Traps ===
+# Triggers the illegal sequence checks in prefix_parser
+seq_bad_1="-_"
+seq_bad_2="_-"
+seq_bad_3=".."
+seq_bad_4="//"
 
-# Bracket structures (AFL++ will learn to pair these)
-ext_bracket_open="["
-ext_bracket_close="]"
-ext_paren_open="("
-ext_paren_close=")"
+# === Extension Bracket State Machine ===
+# Triggers "Bracket contains no alphanumeric characters"
+brk_empty_sq="[]"
+brk_empty_pr="()"
+# Triggers "Nested brackets are not allowed"
+brk_nested="[["
+# Triggers "Mismatched closing bracket type"
+brk_mismatch="[)"
 
-# A couple of uppercase letters to trigger the 'A'..'Z' branch
-ext_char_A="A"
-ext_char_Z="Z"
+# === Extension Delimiter Streaks ===
+# Triggers "Heterogeneous continuous delimiters detected"
+delim_hetero=".-"
+delim_hetero2="_:"
