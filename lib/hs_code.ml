@@ -5,6 +5,9 @@ module type Bounded_int_config = sig
   val name : string
 end
 
+(* Here we parse the 2 char string, check digit, and manually parse digit to int *)
+(* Note: single digit printed and string are explicitly disallowed in HS code *)
+(* Note: HS code must be XX.XX.XX, any lower and is rejected *)
 module Bounded_int (Config : Bounded_int_config) : sig
   type t
 
@@ -13,26 +16,28 @@ module Bounded_int (Config : Bounded_int_config) : sig
 end = struct
   type t = int
 
-  (* Here we parse the 2 char string, check digit, and manually parse digit to int *)
-  (* Note: single digit printed and string are explicitly disallowed in HS code *)
-  (* Note: HS code must be XX.XX.XX, any lower and is rejected *)
   let of_string s =
     let open Result.Syntax in
     
-    (* internal parser. Error () is an unit to type match *)
-    let parse_digits s =
-      let* () = if String.length s = 2 then Ok () else Error () in
-      let* c1 = match s.[0] with '0' .. '9' as c -> Ok c | _ -> Error () in
-      let* c2 = match s.[1] with '0' .. '9' as c -> Ok c | _ -> Error () in
-      
-      let n = (int_of_char c1 - 48) * 10 + (int_of_char c2 - 48) in
-      if n >= Config.min && n <= Config.max then Ok n else Error ()
+    let* () = 
+      if String.length s = 2 then Ok () 
+      else Error (Printf.sprintf "%s segment must be exactly 2 characters long (received %S)" Config.name s) 
     in
-
-    (* Error accumulator *)
-    match parse_digits s with
-    | Ok n -> Ok n
-    | Error () -> Error "Part of HS code must be exactly 2 digits"
+    let* c1 = match s.[0] with 
+      | '0' .. '9' as c -> Ok c 
+      | _ -> Error (Printf.sprintf "Invalid character %C in %s segment; must be a digit" s.[0] Config.name) 
+    in
+    let* c2 = match s.[1] with 
+      | '0' .. '9' as c -> Ok c 
+      | _ -> Error (Printf.sprintf "Invalid character %C in %s segment; must be a digit" s.[1] Config.name) 
+    in
+    
+    let n = (int_of_char c1 - 48) * 10 + (int_of_char c2 - 48) in
+    if n >= Config.min && n <= Config.max then 
+      Ok n 
+    else 
+      Error (Printf.sprintf "%s value %02d is out of bounds (must be between %02d and %02d)" 
+               Config.name n Config.min Config.max)
 
   let to_int n = n
 end
@@ -117,10 +122,9 @@ end = struct
 end
 
 
-
+(* type declaration *)
 type t = { chapter : Chapter.t; heading : Heading.t; subheading : Subheading.t; extension : Extension.t option }
 
-(* It is impossible to encode byte length as a type *)
 type prefix_result = 
   | ValidPrefix of bytes * string
   | Invalid of string
@@ -144,103 +148,144 @@ type prefix_result =
   Contrapositive: If bytes written <> 6, then `digits_found <> 6`, forcing 
   the `End` branch to evaluate to `Invalid`. 
   *)
-let extract_six_digits_unicode raw_s =
-  let decoder = Uutf.decoder (`String raw_s) in
+let extract_six_digits uchars =
+  (* Allocate exactly 6 bytes, no resizing allowed *)
+  let prefix_bytes = Bytes.create 6 in
 
-  (* Allocate exactly 6 bytes, no resizing logic attached *)
-  let prefix_bytes = Bytes.create 6 in 
-  
-  (* This is resizable *)
-  let extension_buf = Buffer.create 16 in 
+  (* This is resizable, 16 here is a suggestion *)
+  let extension_buf = Buffer.create 16 in
   
   (* We use a state machine "scan" to parse the prefix. The states are:
   - digits_found acts as the index for prefix_bytes: 0, 1, 2, 3, 4, 5
   - total_chars_read is... well... total chars read
   - last_char is the last read char *)
-  let rec scan digits_found total_chars_read last_char =
-    match Uutf.decode decoder with
-    | `Await -> Invalid "Unexpected streaming block"
-    | `Malformed _ -> Invalid "Input contains invalid UTF-8 byte sequences"
-    | `End -> 
-        if digits_found = 6 then (* technically excessive, but help myself *)
-          ValidPrefix (prefix_bytes, Buffer.contents extension_buf)
-        else 
+  let rec scan digits_found total_chars_read last_char remaining_uchars =
+    if digits_found = 6 then begin
+      (* termination case *)      
+      List.iter (Uutf.Buffer.add_utf_8 extension_buf) remaining_uchars;
+      ValidPrefix (prefix_bytes, Buffer.contents extension_buf)
+    end else
+      (* transistion case *)
+      match remaining_uchars with
+      | [] -> 
           Invalid "String ended before 6 digits were found"
-    | `Uchar uchar ->
-        let code = Uchar.to_int uchar in
-        let next_total = total_chars_read + 1 in
-        
-        match (digits_found < 6) with
-        | true -> begin
-            if code < 0 || code > 127 then
-              Invalid (Printf.sprintf "Illegal multi-byte character at position %d" next_total)
-            else
-              let c = Char.chr code in
-              match c with
-              | '0' .. '9' ->
-                  Bytes.set prefix_bytes digits_found c;
-                  scan (digits_found + 1) next_total '0'
-              | ' ' ->
-                  scan digits_found next_total ' '
-              | '_' -> begin
-                  match last_char with
-                  | '-' -> Invalid (Printf.sprintf "Illegal sequence '-_' at position %d" next_total)
-                  | _   -> scan digits_found next_total '_'
-                end
-              | '-' -> begin
-                  match last_char with
-                  | '_' -> Invalid (Printf.sprintf "Illegal sequence '_-' at position %d" next_total)
-                  | _   -> scan digits_found next_total '-'
-                end
-              | '.' | '/' -> begin
-                  match last_char with
-                  | '.' | '/' -> 
-                      Invalid (Printf.sprintf "Illegal consecutive delimiters at position %d" next_total)
-                  | _ -> 
-                      if digits_found = 2 || digits_found = 4 then
-                        scan digits_found next_total c
-                      else
-                        Invalid (Printf.sprintf "Malformed HS structure: delimiter '%c' placed at invalid digit count %d" c digits_found)
-                end
-              | _ ->
-                  Invalid (Printf.sprintf "Illegal formatting character '%c' at position %d" c next_total)
-          end
-
-        | false ->
-            Uutf.Buffer.add_utf_8 extension_buf uchar;
-            scan digits_found next_total last_char
+      | uchar :: tail ->
+          let code = Uchar.to_int uchar in
+          let next_total = total_chars_read + 1 in
+          
+          if code < 0 || code > 127 then
+            Invalid (Printf.sprintf "Illegal multi-byte character at position %d" next_total)
+          else
+            let c = Char.chr code in
+            match c with
+            | '0' .. '9' ->
+                Bytes.set prefix_bytes digits_found c;
+                scan (digits_found + 1) next_total '0' tail
+            | ' ' -> scan digits_found next_total ' ' tail
+            | '_' -> begin
+                match last_char with
+                | '-' -> Invalid (Printf.sprintf "Illegal sequence '-_' at position %d" next_total)
+                | _   -> scan digits_found next_total '_' tail
+              end
+            | '-' -> begin
+                match last_char with
+                | '_' -> Invalid (Printf.sprintf "Illegal sequence '_-' at position %d" next_total)
+                | _   -> scan digits_found next_total '-' tail
+              end
+            | '.' | '/' -> begin
+                match last_char with
+                | '.' | '/' -> 
+                    Invalid (Printf.sprintf "Illegal consecutive delimiters at position %d" next_total)
+                | _ -> 
+                    if digits_found = 2 || digits_found = 4 then
+                      scan digits_found next_total c tail
+                    else
+                      Invalid (Printf.sprintf "Malformed HS structure: delimiter '%c' placed at invalid digit count %d" c digits_found)
+              end
+            | _ ->
+                Invalid (Printf.sprintf "Illegal formatting character '%c' at position %d" c next_total)
   in
 
   (* Start parsing of prefix:
   - digits_found acts as the index for prefix_bytes: 0, 1, 2, 3, 4, 5
   - total_chars_read is... well... total chars read
   - last_char start with a null character *)
+  scan 0 0 '\000' uchars
 
-  scan 0 0 '\000'
+
+let prefix_unicode_parser raw_s =
+  let decoder = Uutf.decoder (`String raw_s) in
+  let rec decode_all acc =
+    match Uutf.decode decoder with
+    | `Await -> Error "Unexpected streaming block"
+    | `Malformed _ -> Error "Input contains invalid UTF-8 byte sequences"
+    | `End -> Ok (List.rev acc)
+    | `Uchar uchar -> decode_all (uchar :: acc)
+  in
+
+  match decode_all [] with
+  | Error msg -> Invalid msg
+  | Ok uchars -> extract_six_digits uchars
 
 
-(* of_string, a public API that handle extract_six_digits_unicode crashes,
-  then we put the pile of digits into the container, then parse the extension
-  raw string and pack it into a 16 character buffer. If the provided extension
-  cannot fit to the 16 characters buffer, it will return an error.
+(* Now, we clean and check whether it has any semantic meaning *)
+(* here we flatten the implicit hierarchy of the extension for the densest *)
+(* most compact representation, as recommended by the *)
+(* Data Element 7357 / TDED 7357 (WCO Data Model). *)
+(* The caller has the responsibility to enforce data hierarchy. *)
+let parse_extension raw_ext =
+  let is_delimiter = function
+    | '[' | ']' | '(' | ')' | '-' | '/' | ':' | '_' | '.' | ' ' -> true
+    | _ -> false
+  in
 
-  We disallow whitespaces other than " " because here we don't have any context
-  of where these whitespaces exist and why do they spawn to existance, thus it is better
-  for the caller of the function to figure out the semantics.
+  let is_alphanumeric = function
+    | 'A' .. 'Z' | 'a' .. 'z' | '0' .. '9' -> true
+    | _ -> false
+  in
+
+  let chars = String.to_seq raw_ext in
   
-  Aka, no custom data forms would accept "23
-  3452" (23\n3452) as a valid HS code.
+  let has_illegal_char = Seq.exists (fun c -> not (is_delimiter c || is_alphanumeric c)) chars in
+  if has_illegal_char then
+    Error "Illegal character encountered in extension"
+  else
+    (* 2. Filter delimiters and normalize to uppercase *)
+    let normalized_seq = 
+      chars
+      |> Seq.filter is_alphanumeric
+      |> Seq.map Char.uppercase_ascii
+    in
+    let normalized_str = String.of_seq normalized_seq in
+    
+    match String.length normalized_str with
+    | 0 -> Ok None
+    | len when len > 16 -> Error "Flattened extension exceeds 16-character ceiling"
+    | _ -> Ok (Some normalized_str)
+
+
+(* of_string, a public API that handle prefix_unicode_parser crashes,
+   then we put the pile of digits into the container, then parse the extension
+   raw string and pack it into a 16 character buffer. If the provided extension
+   cannot fit to the 16 characters buffer, it will return an error.
+
+   We disallow whitespaces other than " " because here we don't have any context
+   of where these whitespaces exist and why do they spawn to existence, thus it is better
+   for the caller of the function to figure out the semantics.
+   
+   Aka, no custom data forms would accept "23
+   3452" (23\n3452) as a valid HS code.
 *)
 let of_string raw_s =
   let open Result.Syntax in
   
   (* First parse the prefix to a 6 digit prefix, then match the error *)
-  match extract_six_digits_unicode raw_s with
+  match prefix_unicode_parser raw_s with
   | Invalid msg -> Error msg
-  | ValidPrefix (prefix, raw_extension) ->
+  | ValidPrefix (prefix, raw_ext) ->
   
       (* Slice the prefix buckets, guaranteed to be exactly
-        6 pure ASCII numeric chars by the scanner *)
+         6 pure ASCII numeric chars by the scanner *)
       let c_raw = Bytes.sub_string prefix 0 2 in
       let h_raw = Bytes.sub_string prefix 2 2 in
       let s_raw = Bytes.sub_string prefix 4 2 in
@@ -248,51 +293,8 @@ let of_string raw_s =
       let* heading    = Heading.of_string h_raw in
       let* subheading = Subheading.of_string s_raw in
 
-      (* Now, we clean and check whether it has any semantic meaning *)
-      (* here we flatten the implicit hierarchy of the extension for the densest *)
-      (* most compact representation, as recommended by the *)
-      (* Data Element 7357 / TDED 7357 (WCO Data Model). *)
-      (* The caller has the reponsibility to enforce data hierarchy. *)
-
-      let is_delimiter = function
-        | '[' | ']' | '(' | ')' | '-' | '/' | ':' | '_' | '.' | ' ' -> true
-        | _ -> false
-      in
-
-      let is_alphanumeric = function
-        | 'A' .. 'Z' | 'a' .. 'z' | '0' .. '9' -> true
-        | _ -> false
-      in
-
-      (* packing the extension *)
-      let parse_extension raw_extension =
-        if String.length raw_extension = 0 then 
-          Ok None
-        else
-          let chars = String.to_seq raw_extension in
-          
-          (* validate for illegal characters up front *)
-          let has_illegal_char = Seq.exists (fun c -> not (is_delimiter c || is_alphanumeric c)) chars in
-          if has_illegal_char then
-            Error "Illegal character encountered in extension"
-          else
-            (* filter delimiters and normalize to uppercase *)
-            let normalized_seq = 
-              chars
-              |> Seq.filter is_alphanumeric
-              |> Seq.map Char.uppercase_ascii
-            in
-            let normalized_str = String.of_seq normalized_seq in
-            
-            (* validate length boundaries *)
-            match String.length normalized_str with
-            | 0 -> Error "Trailing garbage or invalid delimiters found after HS6 prefix"
-            | len when len > 16 -> Error "Flattened extension exceeds 16-character ceiling"
-            | _ -> Ok (Some normalized_str)
-      in
-
       (* put it as a string in the data structure *)
-      let* extension_opt = parse_extension raw_extension in
+      let* extension_opt = parse_extension raw_ext in
       let* extension = 
         match extension_opt with
         | None -> Ok None
@@ -316,7 +318,7 @@ let to_string { chapter; heading; subheading; extension } =
 let pp ppf t = 
   Format.pp_print_string ppf (to_string t)
 
-  
+
 (* getters *)
 let chapter t = Chapter.to_int t.chapter
 let heading t = Heading.to_int t.heading
