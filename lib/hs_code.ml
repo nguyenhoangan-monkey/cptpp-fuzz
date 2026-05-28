@@ -79,10 +79,22 @@ module Extension : sig
 end = struct
   type t = string
 
+  let is_valid_char = function
+    | 'A' .. 'Z' | '0' .. '9' -> true
+    | _ -> false
+
   let of_string s =
-    if String.length s = 0 then Error "Extension cannot be empty"
-    else if String.length s > 16 then Error "Extension exceeded 16 characters"
-    else Ok s
+    let len = String.length s in
+    match len with
+    | 0 -> Error "Extension cannot be empty"
+    | _ when len > 16 -> Error "Extension exceeded 16 characters"
+    | _ ->
+        let rec check i =
+          if i >= len then Ok s
+          else if is_valid_char s.[i] then check (i + 1)
+          else Error "Extension contains invalid characters (must be uppercase alphanumeric)"
+        in
+        check 0
 
   let to_string t = t
 end
@@ -157,12 +169,12 @@ let extension_validator raw_s uchars =
     match chars with
     | [] ->
         (match ctx with
-         | Outside -> ValidPrefix (raw_s, raw_s)
-         | Inside _ -> Invalid "Unclosed bracket at end of extension")
+         | Outside -> Ok uchars
+         | Inside _ -> Error "Unclosed bracket at end of extension")
     | u :: rest ->
         let code = Uchar.to_int u in
         if code < 0 || code > 127 then
-          Invalid "Multi-byte/Non-ASCII characters are not allowed"
+          Error "Multi-byte/Non-ASCII characters are not allowed"
         else
           let c = Char.chr code in
           match c with
@@ -178,41 +190,30 @@ let extension_validator raw_s uchars =
 
           | '[' | '(' ->
               (match ctx with
-              | Inside _ -> Invalid "Nested brackets are not allowed"
+              | Inside _ -> Error "Nested brackets are not allowed"
               | Outside ->
                   let expected_close = if c = '[' then ']' else ')' in
                   loop (Inside (expected_close, false)) None rest)
 
           | ']' | ')' ->
               (match ctx with
-              | Outside -> Invalid "Unmatched closing bracket"
+              | Outside -> Error "Unmatched closing bracket"
               | Inside (expected, has_alnum) ->
-                  if c <> expected then Invalid "Mismatched closing bracket type"
-                  else if not has_alnum then Invalid "Bracket contains no alphanumeric characters"
+                  if c <> expected then Error "Mismatched closing bracket type"
+                  else if not has_alnum then Error "Bracket contains no alphanumeric characters"
                   else loop Outside None rest)
 
           | '-' | '/' | ':' | '_' | '.' ->
               (match streak with
               | None -> loop ctx (Some c) rest
               | Some last_delim ->
-                  if c <> last_delim then Invalid "Heterogeneous continuous delimiters detected"
+                  if c <> last_delim then Error "Heterogeneous continuous delimiters detected"
                   else loop ctx (Some c) rest)
 
           | _ ->
-              Invalid (Printf.sprintf "Invalid character '%c' in extension" c)
+              Error (Printf.sprintf "Invalid character '%c' in extension" c)
   in
   loop Outside None uchars
-
-let extension_unicode_validator raw_s =
-  let decoder = Uutf.decoder (`String raw_s) in
-  let rec decode_all acc =
-    match Uutf.decode decoder with
-    | `Await -> Invalid "Unexpected streaming block"
-    | `Malformed _ -> Invalid "Input contains invalid UTF-8 byte sequences"
-    | `End -> extension_validator raw_s (List.rev acc)
-    | `Uchar uchar -> decode_all (uchar :: acc)
-  in
-  decode_all []
 
 
 (* here we flatten the implicit hierarchy of the extension for the densest *)
@@ -246,20 +247,20 @@ let extension_parser uchars =
   in
   loop [] 0 uchars
 
-let extension_unicode_parser raw_s =
-  let decoder = Uutf.decoder (`String raw_s) in
+let extension_unicode_parser raw_ext =
+  let decoder = Uutf.decoder (`String raw_ext) in
   let rec decode_all acc =
     match Uutf.decode decoder with
     | `Await -> Error "Unexpected streaming block"
     | `Malformed _ -> Error "Input contains invalid UTF-8 byte sequences"
-    | `End -> extension_parser (List.rev acc) (* remember, acc is reversed! *)
-    | `Uchar uchar ->
-        if Uchar.to_int uchar = 0 then
-          Error "Malicious input: String contains null bytes"
-        else
-          decode_all (uchar :: acc)
+    | `End -> Ok (List.rev acc)
+    | `Uchar uchar -> decode_all (uchar :: acc)
   in
-  decode_all []
+  let open Result.Syntax in
+  let* tokens = decode_all [] in
+  let* validated_tokens = extension_validator raw_ext tokens in
+  extension_parser validated_tokens
+
 
 (* Sometimes, strings have \0 as an artefact from C *)
 (* we allow \0 inside the string, but only at the very end *)
@@ -305,12 +306,7 @@ let of_string raw_s =
       let* subheading = Subheading.of_string s_raw in
 
       (* validate and parse extension *)
-      let* extension_opt =
-        match extension_unicode_validator raw_ext with
-        | Invalid msg -> Error msg
-        | ValidPrefix (_, _) ->
-            extension_unicode_parser raw_ext
-      in
+      let* extension_opt = extension_unicode_parser raw_ext in
       let* extension =
         match extension_opt with
         | None -> Ok None
