@@ -18,25 +18,25 @@ end = struct
 
   let of_string s =
     let open Result.Syntax in
-    
-    let* () = 
-      if String.length s = 2 then Ok () 
-      else Error (Printf.sprintf "%s segment must be exactly 2 characters long (received %S)" Config.name s) 
+
+    let* () =
+      if String.length s = 2 then Ok ()
+      else Error (Printf.sprintf "%s segment must be exactly 2 characters long (received %S)" Config.name s)
     in
-    let* c1 = match s.[0] with 
-      | '0' .. '9' as c -> Ok c 
-      | _ -> Error (Printf.sprintf "Invalid character %C in %s segment; must be a digit" s.[0] Config.name) 
+    let* c1 = match s.[0] with
+      | '0' .. '9' as c -> Ok c
+      | _ -> Error (Printf.sprintf "Invalid character %C in %s segment; must be a digit" s.[0] Config.name)
     in
-    let* c2 = match s.[1] with 
-      | '0' .. '9' as c -> Ok c 
-      | _ -> Error (Printf.sprintf "Invalid character %C in %s segment; must be a digit" s.[1] Config.name) 
+    let* c2 = match s.[1] with
+      | '0' .. '9' as c -> Ok c
+      | _ -> Error (Printf.sprintf "Invalid character %C in %s segment; must be a digit" s.[1] Config.name)
     in
-    
+
     let n = (int_of_char c1 - 48) * 10 + (int_of_char c2 - 48) in
-    if n >= Config.min && n <= Config.max then 
-      Ok n 
-    else 
-      Error (Printf.sprintf "%s value %02d is out of bounds (must be between %02d and %02d)" 
+    if n >= Config.min && n <= Config.max then
+      Ok n
+    else
+      Error (Printf.sprintf "%s value %02d is out of bounds (must be between %02d and %02d)"
                Config.name n Config.min Config.max)
 
   let to_int n = n
@@ -78,7 +78,7 @@ module Extension : sig
   val to_string : t -> string
 end = struct
   type t = string
-  
+
   let of_string s =
     if String.length s = 0 then Error "Extension cannot be empty"
     else if String.length s > 16 then Error "Extension exceeded 16 characters"
@@ -87,111 +87,61 @@ end = struct
   let to_string t = t
 end
 
-
-(* type declaration *)
 type t = { chapter : Chapter.t; heading : Heading.t; subheading : Subheading.t; extension : Extension.t option }
 
-type prefix_result = 
-  | ValidPrefix of bytes * string
+type prefix_result =
+  | ValidPrefix of string * string
   | Invalid of string
 
-(*
-  INDUCTION PROOF: STRICT 6-BYTE GUARANTEE
-  
-  Loop Invariant: At step n, `prefix_bytes` contains exactly `digits_found` 
-  bytes, where 0 <= digits_found <= 6.
-
-  - Base Case (n=0): `digits_found = 0`, `prefix_bytes` is empty. (True)
-  - Inductive Step (n -> n+1): 
-    * If `digits_found < 6`, a valid digit mutates the buffer and increments 
-      `digits_found` to n+1. Invariant holds.
-    * If `digits_found = 6`, the guard matches `false`, short-circuiting all 
-      future writes to `extension_buf`. `digits_found` stays 6. Invariant holds.
-
-  The function only yields `ValidPrefix` on `End` if `digits_found = 6`.
-  By the invariant, `digits_found = 6` implies exactly 6 bytes were written.
-
-  Contrapositive: If bytes written <> 6, then `digits_found <> 6`, forcing 
-  the `End` branch to evaluate to `Invalid`. 
-  *)
-let extract_six_digits uchars =
-  (* Allocate exactly 6 bytes, no resizing allowed *)
-  let prefix_bytes = Bytes.create 6 in
-
-  (* This is resizable, 16 here is a suggestion *)
-  let extension_buf = Buffer.create 16 in
-  
-  (* We use a state machine "scan" to parse the prefix. The states are:
-  - digits_found acts as the index for prefix_bytes: 0, 1, 2, 3, 4, 5
-  - total_chars_read is... well... total chars read
-  - last_char is the last read char *)
-  let rec scan digits_found total_chars_read last_char remaining_uchars =
-    if digits_found = 6 then begin
-      (* termination case *)      
-      List.iter (Uutf.Buffer.add_utf_8 extension_buf) remaining_uchars;
-      ValidPrefix (prefix_bytes, Buffer.contents extension_buf)
-    end else
-      (* transistion case *)
-      match remaining_uchars with
-      | [] -> 
-          Invalid "String ended before 6 digits were found"
-      | uchar :: tail ->
-          let code = Uchar.to_int uchar in
-          let next_total = total_chars_read + 1 in
-          
-          if code < 0 || code > 127 then
-            Invalid (Printf.sprintf "Illegal multi-byte character at position %d" next_total)
-          else
-            let c = Char.chr code in
-            match c with
-            | '0' .. '9' ->
-                Bytes.set prefix_bytes digits_found c;
-                scan (digits_found + 1) next_total '0' tail
-            | ' ' -> scan digits_found next_total ' ' tail
-            | '_' -> begin
-                match last_char with
-                | '-' -> Invalid (Printf.sprintf "Illegal sequence '-_' at position %d" next_total)
-                | _   -> scan digits_found next_total '_' tail
-              end
-            | '-' -> begin
-                match last_char with
-                | '_' -> Invalid (Printf.sprintf "Illegal sequence '_-' at position %d" next_total)
-                | _   -> scan digits_found next_total '-' tail
-              end
-            | '.' | '/' -> begin
-                match last_char with
-                | '.' | '/' -> 
-                    Invalid (Printf.sprintf "Illegal consecutive delimiters at position %d" next_total)
-                | _ -> 
-                    if digits_found = 2 || digits_found = 4 then
-                      scan digits_found next_total c tail
-                    else
-                      Invalid (Printf.sprintf "Malformed HS structure: delimiter '%c' placed at invalid digit count %d" c digits_found)
-              end
-            | _ ->
-                Invalid (Printf.sprintf "Illegal formatting character '%c' at position %d" c next_total)
+let prefix_parser raw_s len =
+  let rec verify i last =
+    if i >= len then Ok ()
+    else
+      let c = raw_s.[i] in
+      match last, c with
+      | '-', '_' -> Error (Printf.sprintf "Illegal sequence '-_' at position %d" (i + 1))
+      | '_', '-' -> Error (Printf.sprintf "Illegal sequence '_-' at position %d" (i + 1))
+      | ('.'|'/'), ('.'|'/') -> Error (Printf.sprintf "Illegal consecutive delimiters at position %d" (i + 1))
+      | _ -> verify (i + 1) c
   in
 
-  (* Start parsing of prefix:
-  - digits_found acts as the index for prefix_bytes: 0, 1, 2, 3, 4, 5
-  - total_chars_read is... well... total chars read
-  - last_char start with a null character *)
-  scan 0 0 '\000' uchars
+  let rec collect i digits_acc =
+    let digits_count = List.length digits_acc in
+    if digits_count = 6 then
+      Some (List.rev digits_acc, i)
+    else if i >= len then
+      None
+    else
+      match raw_s.[i] with
+      | '0'..'9' as digit -> 
+          collect (i + 1) (digit :: digits_acc)
+      | ' ' | '_' | '-' -> 
+          collect (i + 1) digits_acc
+      | '.' | '/' ->
+          (* Delimiters can only appear after Chapter or Heading *)
+          begin match digits_count with
+          | 2 | 4 -> collect (i + 1) digits_acc
+          | _ -> None
+          end    
+      | _ -> None
+  in
 
+  (* initiate matching logic *)
+  match verify 0 '\000' with
+  | Error msg -> Error msg
+  | Ok () ->
+      match collect 0 [] with
+      | None -> Error "Malformed HS code prefix structure or illegal characters detected"
+      | Some (digits, ext_start_idx) -> Ok (digits, ext_start_idx)
 
 let prefix_unicode_parser raw_s =
-  let decoder = Uutf.decoder (`String raw_s) in
-  let rec decode_all acc =
-    match Uutf.decode decoder with
-    | `Await -> Error "Unexpected streaming block"
-    | `Malformed _ -> Error "Input contains invalid UTF-8 byte sequences"
-    | `End -> Ok (List.rev acc)
-    | `Uchar uchar -> decode_all (uchar :: acc)
-  in
-
-  match decode_all [] with
+  let len = String.length raw_s in
+  match prefix_parser raw_s len with
   | Error msg -> Invalid msg
-  | Ok uchars -> extract_six_digits uchars
+  | Ok (digits, ext_start_idx) ->
+      let prefix = String.of_seq (List.to_seq digits) in
+      let extension = String.sub raw_s ext_start_idx (len - ext_start_idx) in
+      ValidPrefix (prefix, extension)
 
 
 (* tracking the state of brackets *)
@@ -201,29 +151,30 @@ type bracket_context =
 
 (* Now, we clean and check whether it has any semantic meaning *)
 (* The caller has the responsibility to enforce data hierarchy. *)
+(* because of it, we use a state machine. *)
 let extension_validator raw_s uchars =
   let rec loop ctx streak chars =
     match chars with
     | [] ->
         (match ctx with
-         | Outside -> ValidPrefix (Bytes.of_string raw_s, raw_s)
+         | Outside -> ValidPrefix (raw_s, raw_s)
          | Inside _ -> Invalid "Unclosed bracket at end of extension")
     | u :: rest ->
         let code = Uchar.to_int u in
-        if code < 0 || code > 127 then 
+        if code < 0 || code > 127 then
           Invalid "Multi-byte/Non-ASCII characters are not allowed"
         else
           let c = Char.chr code in
           match c with
-          | ' ' -> 
-              loop ctx streak rest 
+          | ' ' ->
+              loop ctx streak rest
 
           | 'A' .. 'Z' | 'a' .. 'z' | '0' .. '9' ->
               let next_ctx = match ctx with
                 | Outside -> Outside
                 | Inside (close, _) -> Inside (close, true)
               in
-              loop next_ctx None rest 
+              loop next_ctx None rest
 
           | '[' | '(' ->
               (match ctx with
@@ -275,10 +226,10 @@ let extension_parser uchars =
         (match count with
         | 0 -> Ok None
         | c when c > 16 -> Error "Flattened extension exceeds 16-character ceiling"
-        | _ -> 
+        | _ ->
             let final_str = String.of_seq (List.to_seq (List.rev acc)) in
             Ok (Some final_str))
-          
+
     | u :: rest ->
         let code = Uchar.to_int u in
         if code < 0 || code > 127 then
@@ -286,11 +237,11 @@ let extension_parser uchars =
         else
           let c = Char.chr code in
           match c with
-          | 'a' .. 'z' -> 
+          | 'a' .. 'z' ->
               loop (Char.uppercase_ascii c :: acc) (count + 1) rest
-          | 'A' .. 'Z' | '0' .. '9' -> 
+          | 'A' .. 'Z' | '0' .. '9' ->
               loop (c :: acc) (count + 1) rest
-          | _ -> 
+          | _ ->
               loop acc count rest
   in
   loop [] 0 uchars
@@ -302,9 +253,24 @@ let extension_unicode_parser raw_s =
     | `Await -> Error "Unexpected streaming block"
     | `Malformed _ -> Error "Input contains invalid UTF-8 byte sequences"
     | `End -> extension_parser (List.rev acc) (* remember, acc is reversed! *)
-    | `Uchar uchar -> decode_all (uchar :: acc)
+    | `Uchar uchar ->
+        if Uchar.to_int uchar = 0 then
+          Error "Malicious input: String contains null bytes"
+        else
+          decode_all (uchar :: acc)
   in
   decode_all []
+
+(* Sometimes, strings have \0 as an artefact from C *)
+(* we allow \0 inside the string, but only at the very end *)
+(* else it is rejected *)
+let validate_and_strip_nulls raw_s =
+  let len = String.length raw_s in
+  match String.index_from_opt raw_s 0 '\000' with
+  | None -> Ok raw_s
+  | Some idx when idx = len - 1 -> Ok (String.sub raw_s 0 idx)
+  | Some idx -> Error (Printf.sprintf "Security Exception: Embedded null byte detected at position %d" idx)
+
 
 
 (* of_string, a public API that handle prefix_unicode_parser crashes,
@@ -315,39 +281,40 @@ let extension_unicode_parser raw_s =
    We disallow whitespaces other than " " because here we don't have any context
    of where these whitespaces exist and why do they spawn to existence, thus it is better
    for the caller of the function to figure out the semantics.
-   
+
    Aka, no custom data forms would accept "23
    3452" (23\n3452) as a valid HS code.
 *)
-
 let of_string raw_s =
   let open Result.Syntax in
-  
+
+  let* clean_s = validate_and_strip_nulls raw_s in
+
   (* First parse the prefix to a 6 digit prefix, then match the error *)
-  match prefix_unicode_parser raw_s with
+  match prefix_unicode_parser clean_s with
   | Invalid msg -> Error msg
   | ValidPrefix (prefix, raw_ext) ->
-  
+
       (* Slice the prefix buckets, guaranteed to be exactly
          6 pure ASCII numeric chars by the scanner *)
-      let c_raw = Bytes.sub_string prefix 0 2 in
-      let h_raw = Bytes.sub_string prefix 2 2 in
-      let s_raw = Bytes.sub_string prefix 4 2 in
+      let c_raw = String.sub prefix 0 2 in
+      let h_raw = String.sub prefix 2 2 in
+      let s_raw = String.sub prefix 4 2 in
       let* chapter    = Chapter.of_string c_raw in
       let* heading    = Heading.of_string h_raw in
       let* subheading = Subheading.of_string s_raw in
 
       (* validate and parse extension *)
-      let* extension_opt = 
+      let* extension_opt =
         match extension_unicode_validator raw_ext with
         | Invalid msg -> Error msg
-        | ValidPrefix (_, _) -> 
+        | ValidPrefix (_, _) ->
             extension_unicode_parser raw_ext
       in
-      let* extension = 
+      let* extension =
         match extension_opt with
         | None -> Ok None
-        | Some e -> 
+        | Some e ->
             let* valid_ext = Extension.of_string e in
             Ok (Some valid_ext)
       in
@@ -366,7 +333,7 @@ let to_string { chapter; heading; subheading; extension } =
       let e_str = Extension.to_string e in
       Printf.sprintf "%02d.%02d.%02d.%s" c h s e_str
 
-let pp ppf t = 
+let pp ppf t =
   Format.pp_print_string ppf (to_string t)
 
 
@@ -374,7 +341,7 @@ let pp ppf t =
 let chapter t = Chapter.to_int t.chapter
 let heading t = Heading.to_int t.heading
 let subheading t = Subheading.to_int t.subheading
-let extension t = 
+let extension t =
   match t.extension with
   | None -> None
   | Some e -> Some (Extension.to_string e)
@@ -392,11 +359,11 @@ let match_level a b =
   let c = Chapter.to_int a.chapter = Chapter.to_int b.chapter in
   let h = Heading.to_int a.heading = Heading.to_int b.heading in
   let s = Subheading.to_int a.subheading = Subheading.to_int b.subheading in
-  let e = Option.equal String.equal 
-            (Option.map Extension.to_string a.extension) 
-            (Option.map Extension.to_string b.extension) 
+  let e = Option.equal String.equal
+            (Option.map Extension.to_string a.extension)
+            (Option.map Extension.to_string b.extension)
   in
-  
+
   match (c, h, s, e) with
   | (true,  true,  true,  true)  -> Identical
   | (true,  true,  true,  false) -> Extension_mismatch
@@ -408,15 +375,15 @@ let match_level a b =
 let compare a b =
   match match_level a b with
   | Identical -> 0
-  | Chapter_mismatch -> 
+  | Chapter_mismatch ->
       Int.compare (Chapter.to_int a.chapter) (Chapter.to_int b.chapter)
-  | Heading_mismatch -> 
+  | Heading_mismatch ->
       Int.compare (Heading.to_int a.heading) (Heading.to_int b.heading)
-  | Subheading_mismatch -> 
+  | Subheading_mismatch ->
       Int.compare (Subheading.to_int a.subheading) (Subheading.to_int b.subheading)
   | Extension_mismatch ->
-      Option.compare String.compare 
-        (Option.map Extension.to_string a.extension) 
+      Option.compare String.compare
+        (Option.map Extension.to_string a.extension)
         (Option.map Extension.to_string b.extension)
 
 let equal a b =
