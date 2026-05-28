@@ -22,6 +22,7 @@ let check_file ch_pass ch_fail filepath =
 let rec process_dir ch_pass ch_fail path =
   if Sys.file_exists path && Sys.is_directory path then
     let entries = Sys.readdir path in
+    Array.fast_sort String.compare entries;
     Array.iter (fun entry ->
       let full_path = Filename.concat path entry in
       if Sys.is_directory full_path then

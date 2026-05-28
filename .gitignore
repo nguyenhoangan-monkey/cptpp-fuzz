@@ -5,8 +5,6 @@ _build/
 
 # AFL Fuzzing artifacts
 output/
-output_fail.txt
-output_pass.txt
 
 # Editor / OS specific files
 .DS_Store
