@@ -68,22 +68,15 @@ module Extension : sig
 end = struct
   type t = string
 
-  let is_valid_char = function
-    | 'A' .. 'Z' | '0' .. '9' -> true
-    | _ -> false
+  let is_valid_char = function 'A' .. 'Z' | '0' .. '9' -> true | _ -> false
 
   let of_string s =
-    let len = String.length s in
-    match len with
+    match String.length s with
     | 0 -> Error "Extension cannot be empty"
-    | _ when len > 16 -> Error "Extension exceeded 16 characters"
+    | len when len > 16 -> Error "Extension exceeded 16 characters"
     | _ ->
-        let rec check i =
-          if i >= len then Ok s
-          else if is_valid_char s.[i] then check (i + 1)
-          else Error "Extension contains invalid characters (must be uppercase alphanumeric)"
-        in
-        check 0
+        if String.for_all is_valid_char s then Ok s
+        else Error "Extension contains invalid characters (must be uppercase alphanumeric)"
 
   let to_string t = t
 end
@@ -204,7 +197,6 @@ let prefix_of_chunks chunks digit_strings =
   
   match chunks, digit_strings with
   (* 1 2 3 4 5 6 *)
-  (* We match wildcards on the delimiter chunks, keeping the digit list clean *)
   | [Chunk.C1; _; Chunk.C1; _; Chunk.C1; _; Chunk.C1; _; Chunk.C1; _; Chunk.C1], [c1; c2; h1; h2; s1; s2] ->
       let* chapter    = Chapter.of_string (c1 ^ c2) in
       let* heading    = Heading.of_string (h1 ^ h2) in
@@ -300,7 +292,6 @@ let extension_of_tokens uchars =
         | 'A' .. 'Z' | '0' .. '9' ->
             loop (c :: acc) (count + 1) rest
         | ' ' | '[' | ']' | '(' | ')' | '-' | '/' | ':' | '_' | '.' ->
-            (* ignore valid structural formatting tokens *)
             loop acc count rest
         | _ ->
             Error (Printf.sprintf "Unexpected validation leak: illegal character '%c'" c)
@@ -411,45 +402,17 @@ let extension t =
 
 
 (* comparison *)
-type match_level =
-  | Identical
-  | Chapter_mismatch
-  | Heading_mismatch
-  | Subheading_mismatch
-  | Extension_mismatch
-
-let match_level a b =
-  let c = Chapter.to_int a.chapter = Chapter.to_int b.chapter in
-  let h = Heading.to_int a.heading = Heading.to_int b.heading in
-  let s = Subheading.to_int a.subheading = Subheading.to_int b.subheading in
-  let e = Option.equal String.equal
-            (Option.map Extension.to_string a.extension)
-            (Option.map Extension.to_string b.extension)
-  in
-
-  match (c, h, s, e) with
-  | (true,  true,  true,  true)  -> Identical
-  | (true,  true,  true,  false) -> Extension_mismatch
-  | (true,  true,  false, _)     -> Subheading_mismatch
-  | (true,  false, _,     _)     -> Heading_mismatch
-  | (false, _,     _,     _)     -> Chapter_mismatch
-
-
 let compare a b =
-  match match_level a b with
-  | Identical -> 0
-  | Chapter_mismatch ->
-      Int.compare (Chapter.to_int a.chapter) (Chapter.to_int b.chapter)
-  | Heading_mismatch ->
-      Int.compare (Heading.to_int a.heading) (Heading.to_int b.heading)
-  | Subheading_mismatch ->
-      Int.compare (Subheading.to_int a.subheading) (Subheading.to_int b.subheading)
-  | Extension_mismatch ->
-      Option.compare String.compare
-        (Option.map Extension.to_string a.extension)
-        (Option.map Extension.to_string b.extension)
+  match Int.compare (Chapter.to_int a.chapter) (Chapter.to_int b.chapter) with
+  | 0 -> (
+      match Int.compare (Heading.to_int a.heading) (Heading.to_int b.heading) with
+      | 0 -> (
+          match Int.compare (Subheading.to_int a.subheading) (Subheading.to_int b.subheading) with
+          | 0 -> Option.compare String.compare 
+                   (Option.map Extension.to_string a.extension) 
+                   (Option.map Extension.to_string b.extension)
+          | res -> res)
+      | res -> res)
+  | res -> res
 
-let equal a b =
-  match match_level a b with
-  | Identical -> true
-  | _ -> false
+let equal a b = compare a b = 0
