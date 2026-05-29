@@ -13,13 +13,5 @@ val subheading : t -> int
 val extension : t -> string option
 
 (* comparison *)
-type match_level =
-  | Identical
-  | Chapter_mismatch
-  | Heading_mismatch
-  | Subheading_mismatch
-  | Extension_mismatch
-
-val match_level : t -> t -> match_level
 val equal : t -> t -> bool
 val compare : t -> t -> int
