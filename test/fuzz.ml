@@ -1,19 +1,26 @@
 open AflPersistent
 
 let () =
-  (* Allocate a single large, reusable buffer outside the loop to maximize speed *)
   let run_buf = Bytes.create 65536 in
-  
   AflPersistent.run (fun () ->
     try
-      (* Execute a raw, unbuffered system read directly from file descriptor 0 *)
       let len = Unix.read Unix.stdin run_buf 0 (Bytes.length run_buf) in
       if len > 0 then
         let input = Bytes.sub_string run_buf 0 len in
-        (* Test your pure function with the exact raw mutation payload *)
-        let _ = Hs_code.of_string input in
+        
+        let _ =
+          let open Result.Syntax in
+          let* parsed = Hs_code.of_string input in
+          let serialized = Hs_code.to_string parsed in
+          let* round_tripped = Hs_code.of_string serialized in
+          
+          if parsed <> round_tripped then 
+            failwith "Round-trip mismatch"
+          else 
+            Ok ()
+        in
         ()
     with
+    | Failure msg -> failwith msg
     | _ -> () 
   )
-  
