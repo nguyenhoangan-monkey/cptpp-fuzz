@@ -185,8 +185,8 @@ let classify_delims str =
   (* accepted states *)
   | (0, 0, 0) -> Ok Chunk.Space
   | (0, 0, 1) -> Ok Chunk.Slash_dot
-  | (d, 0, 0) when d > 0 -> Ok Chunk.Dash  (* Clean separation of dashes *)
-  | (0, u, 0) when u > 0 -> Ok Chunk.Dash  (* Clean separation of underscores *)
+  | (d, 0, 0) when d > 0 -> Ok Chunk.Dash
+  | (0, u, 0) when u > 0 -> Ok Chunk.Dash
 
   (* rejected states *)
   | (d, u, _) when d > 0 && u > 0 -> 
@@ -276,7 +276,7 @@ let clean_of_tokens uchars =
          | Inside _ -> Error "Unclosed bracket at end of extension")
     | u :: rest ->
         let code = Uchar.to_int u in
-        if code < 0 || code > 127 then
+        if code > 127 then
           Error "Multi-byte/Non-ASCII characters are not allowed"
         else
           let c = Char.chr code in
@@ -295,9 +295,7 @@ let clean_of_tokens uchars =
               (match ctx with
               | Inside _ -> Error "Nested brackets are not allowed"
               | Outside ->
-                  let expected_close = begin match c with
-                  | '[' -> ']'
-                  | _   -> ')' end in
+                  let expected_close = if c = '[' then ']' else ')' in
                   loop (Inside (expected_close, false)) None rest)
 
           | ']' | ')' ->
@@ -310,10 +308,10 @@ let clean_of_tokens uchars =
 
           | '-' | '/' | ':' | '_' | '.' ->
               (match streak with
-              | None -> loop ctx (Some c) rest
-              | Some last_delim ->
-                  if c <> last_delim then Error "Heterogeneous continuous delimiters detected"
-                  else loop ctx (Some c) rest)
+              | Some last_delim when c <> last_delim -> 
+                  Error "Heterogeneous continuous delimiters detected"
+              | _ -> 
+                  loop ctx (Some c) rest)
 
           | _ ->
               Error (Printf.sprintf "Invalid character '%c' in extension" c)
