@@ -8,19 +8,16 @@ let () =
       if len > 0 then
         let input = Bytes.sub_string run_buf 0 len in
         
-        let _ =
-          let open Result.Syntax in
-          let* parsed = Hs_code.of_string input in
-          let serialized = Hs_code.to_string parsed in
-          let* round_tripped = Hs_code.of_string serialized in
-          
-          if parsed <> round_tripped then 
-            failwith "Round-trip mismatch"
-          else 
-            Ok ()
-        in
-        ()
+        match Hs_code.of_string input with
+        | Error _ -> ()
+        | Ok parsed ->
+            let serialized = Hs_code.to_string parsed in
+            match Hs_code.of_string serialized with
+            | Error msg -> 
+                failwith ("Failed to parse serialized string: " ^ msg)
+            | Ok round_tripped ->
+                if parsed <> round_tripped then 
+                  failwith "Round-trip mismatch!"
     with
     | Failure msg -> failwith msg
-    | _ -> () 
   )

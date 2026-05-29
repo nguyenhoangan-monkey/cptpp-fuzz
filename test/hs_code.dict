@@ -1,33 +1,46 @@
-# === Numeric Boundaries ===
-# 00 triggers the Chapter min check (min=1)
-ch_low="00"
-# 01 and 99 check the exact valid boundary edges
-ch_valid_min="01"
-val_max="99"
+# ==========================================
+# AFL++ Dictionary for HS Code State Machine
+# ==========================================
 
-# === Security & Encoding ===
-# Triggers the embedded null byte security exception
-null_mid="A\x00B"
-# Triggers the non-ASCII / multi-byte check (> 127 code point)
-non_ascii="\xc3\x82"
+# --- Valid Numeric Boundaries ---
+"00"
+"01"
+"99"
 
-# === Prefix Parser Sequence Traps ===
-# Triggers the illegal sequence checks in prefix_parser
-seq_bad_1="-_"
-seq_bad_2="_-"
-seq_bad_3=".."
-seq_bad_4="//"
+# --- Valid Layout Delimiters ---
+"."
+"-"
+"_"
+"/"
+" "
 
-# === Extension Bracket State Machine ===
-# Triggers "Bracket contains no alphanumeric characters"
-brk_empty_sq="[]"
-brk_empty_pr="()"
-# Triggers "Nested brackets are not allowed"
-brk_nested="[["
-# Triggers "Mismatched closing bracket type"
-brk_mismatch="[)"
+# --- Extension Bracket Tokens ---
+"["
+"]"
+"("
+")"
+"[]"
+"()"
+"[["
+"(("
+"[)"
+"(]"
 
-# === Extension Delimiter Streaks ===
-# Triggers "Heterogeneous continuous delimiters detected"
-delim_hetero=".-"
-delim_hetero2="_:"
+# --- Delimiter Edge Cases & Illegal Pairs ---
+"-_"
+"_-"
+".."
+"//"
+".-"
+"-."
+"_:"
+":_"
+
+# --- Mixed Casing (Triggers Uppercasing Engine) ---
+"abc"
+"xyz"
+
+# --- Security Guards & Structure Breaks ---
+"\x00"
+"A\x00B"
+"\xc3\x82"
