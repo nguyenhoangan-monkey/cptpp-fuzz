@@ -25,19 +25,7 @@ Instead of juggling a bunch of open terminal windows, you can just use these qui
 * `make kill` – Stops the background fuzzers but keeps your data safe
 * `make clean` – Stops everything, wipes the results, and cleans up the repo
 
-Seeds used:
-check with `for f in input/*; do cat "$f"; echo ""; done`
-* 012345-ABC123
-* 012345---...---
-* 012345ABCDEFGHIJKLMNOP
-* 01.23.45
-* 002345
-* 0.12345
-* 01..2345
-* 01-_2345
-* 01A2345
-* 01ä2345
-* 012345#EXT
+Seeds used: check at `test/seeds.txt`
 
 Please check output_fail.txt and output_pass.txt to see whether the parsing makes sense. I halted the test at 420 corpus count because by this time, output_fail.txt is just outputting garbage masquading as a new execution pattern.
 
@@ -47,31 +35,31 @@ Please check output_fail.txt and output_pass.txt to see whether the parsing make
 ```sh
          AFL ++4.40c {main} (./_build/default/test/fuzz.exe) [explore]         
 ┌─ process timing ────────────────────────────────────┬─ overall results ────┐
-│        run time : 0 days, 1 hrs, 11 min, 15 sec     │  cycles done : 340   │
-│   last new find : 0 days, 0 hrs, 10 min, 7 sec      │ corpus count : 420   │
+│        run time : 0 days, 0 hrs, 15 min, 43 sec     │  cycles done : 88    │
+│   last new find : 0 days, 0 hrs, 0 min, 5 sec       │ corpus count : 359   │
 │last saved crash : none seen yet                     │saved crashes : 0     │
 │ last saved hang : none seen yet                     │  saved hangs : 0     │
 ├─ cycle progress ─────────────────────┬─ map coverage┴──────────────────────┤
-│  now processing : 365*22 (86.9%)     │    map density : 0.00% / 0.01%      │
-│  runs timed out : 0 (0.00%)          │ count coverage : 3.20 bits/tuple    │
+│  now processing : 131.84 (36.5%)     │    map density : 0.00% / 0.01%      │
+│  runs timed out : 0 (0.00%)          │ count coverage : 2.43 bits/tuple    │
 ├─ stage progress ─────────────────────┼─ findings in depth ─────────────────┤
-│  now trying : havoc                  │ favored items : 84 (20.00%)         │
-│ stage execs : 67/450 (14.89%)        │  new edges on : 110 (26.19%)        │
-│ total execs : 5.07M                  │ total crashes : 0 (0 saved)         │
-│  exec speed : 1256/sec               │  total tmouts : 1 (0 saved)         │
+│  now trying : havoc                  │ favored items : 119 (33.15%)        │
+│ stage execs : 1/50 (2.00%)           │  new edges on : 139 (38.72%)        │
+│ total execs : 1.21M                  │ total crashes : 0 (0 saved)         │
+│  exec speed : 1143/sec               │  total tmouts : 2 (0 saved)         │
 ├─ fuzzing strategy yields ────────────┴─────────────┬─ item geometry ───────┤
-│   bit flips : 12/104, 11/103, 2/101                │    levels : 13        │
-│  byte flips : 1/13, 1/12, 0/10                     │   pending : 0         │
-│ arithmetics : 6/783, 0/420, 0/280                  │  pend fav : 0         │
-│  known ints : 2/88, 4/366, 1/480                   │ own finds : 375       │
-│  dictionary : 3/234, 2/252, 0/0, 0/0               │  imported : 34        │
-│havoc/splice : 318/4.99M, 0/0                       │ stability : 100.00%   │
+│   bit flips : 11/264, 6/262, 2/258                 │    levels : 9         │
+│  byte flips : 1/33, 0/31, 0/27                     │   pending : 0         │
+│ arithmetics : 3/2196, 0/3220, 0/2940               │  pend fav : 0         │
+│  known ints : 2/269, 2/1098, 0/1452                │ own finds : 314       │
+│  dictionary : 6/1020, 18/1085, 0/0, 0/0            │  imported : 25        │
+│havoc/splice : 253/1.20M, 0/0                       │ stability : 100.00%   │
 │py/custom/rq : unused, unused, unused, unused       ├───────────────────────┘
-│    trim/eff : disabled, 30.77%                     │             [cpu: 70%]
+│    trim/eff : disabled, 75.76%                     │             [cpu: 64%]
 └─ strategy: explore ────────── state: in progress ──┘^C
 
 +++ Testing aborted by user +++
 [*] Writing output/main/fastresume.bin ...
-[+] fastresume.bin successfully written with 121675564 bytes.
+[+] fastresume.bin successfully written with 158369807 bytes.
 [+] We're done here. Have a nice day!
 ```
