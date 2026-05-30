@@ -10,7 +10,7 @@ val pp : Format.formatter -> t -> unit
 val chapter : t -> int
 val heading : t -> int
 val subheading : t -> int
-val extension : t -> string option
+val extension : t -> string
 
 (* comparison *)
 val equal : t -> t -> bool

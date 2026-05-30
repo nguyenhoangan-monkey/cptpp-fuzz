@@ -34,9 +34,9 @@ let () =
                 if hd < 0 || hd > 99 then failwith "Heading out of bounds";
                 if sub < 0 || sub > 99 then failwith "Subheading out of bounds";
                 
-                (match ext with
-                 | Some e when String.length e > 16 -> failwith "Extension violates length ceiling"
-                 | _ -> ());
+                (* FIXED: ext is now just a string, no option matching needed *)
+                if String.length ext > 16 then 
+                  failwith "Extension violates length ceiling";
 
                 (* 5. Verify Reflexive Comparison Invariant *)
                 if Hs_code.compare parsed parsed <> 0 then
