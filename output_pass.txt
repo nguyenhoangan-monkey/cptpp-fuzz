@@ -1,348 +1,536 @@
 [PASS] File: output/cpu2/queue/id:000000,time:0,execs:0,orig:seed_1.txt
-  Input : "010000"
-  Parsed: 01.00.00
+  Input : "12.34.56"
+  Parsed: 12.34.56
 
 [PASS] File: output/cpu2/queue/id:000002,time:0,execs:0,orig:seed_11.txt
-  Input : "0110010045"
-  Parsed: 01.10.01.0045
+  Input : "12_34-56"
+  Parsed: 12.34.56
 
-[PASS] File: output/cpu2/queue/id:000008,time:0,execs:0,orig:seed_17.txt
-  Input : "123456A---B...C:::D"
-  Parsed: 12.34.56.ABCD
-
-[PASS] File: output/cpu2/queue/id:000010,time:0,execs:0,orig:seed_19.txt
-  Input : "123456[12345678]-(90123456)"
-  Parsed: 12.34.56.1234567890123456
+[PASS] File: output/cpu2/queue/id:000007,time:0,execs:0,orig:seed_16.txt
+  Input : "123456[A_B.C]"
+  Parsed: 12.34.56.ABC
 
 [PASS] File: output/cpu2/queue/id:000011,time:0,execs:0,orig:seed_2.txt
-  Input : "999999"
+  Input : "99-99-99"
   Parsed: 99.99.99
 
-[PASS] File: output/cpu2/queue/id:000013,time:0,execs:0,orig:seed_21.txt
-  Input : "123456extVAL"
-  Parsed: 12.34.56.EXTVAL
+[PASS] File: output/cpu2/queue/id:000013,time:0,execs:0,orig:seed_3.txt
+  Input : "013456"
+  Parsed: 01.34.56
 
-[PASS] File: output/cpu2/queue/id:000014,time:0,execs:0,orig:seed_3.txt
-  Input : "12.34.56.EXT123"
-  Parsed: 12.34.56.EXT123
+[PASS] File: output/cpu2/queue/id:000014,time:0,execs:0,orig:seed_4.txt
+  Input : "12-3456"
+  Parsed: 12.34.56
 
-[PASS] File: output/cpu2/queue/id:000015,time:0,execs:0,orig:seed_4.txt
-  Input : "12-34_56 [ABC] (123)"
+[PASS] File: output/cpu2/queue/id:000015,time:0,execs:0,orig:seed_5.txt
+  Input : "1234.56"
+  Parsed: 12.34.56
+
+[PASS] File: output/cpu2/queue/id:000016,time:0,execs:0,orig:seed_6.txt
+  Input : "1 2 34 5 6"
+  Parsed: 12.34.56
+
+[PASS] File: output/cpu2/queue/id:000017,time:0,execs:0,orig:seed_7.txt
+  Input : "12.34.56-EXTENSI0N"
+  Parsed: 12.34.56.EXTENSI0N
+
+[PASS] File: output/cpu2/queue/id:000018,time:0,execs:0,orig:seed_8.txt
+  Input : "123456[A1](B2)"
+  Parsed: 12.34.56.A1B2
+
+[PASS] File: output/cpu2/queue/id:000019,time:0,execs:0,orig:seed_9.txt
+  Input : "123456-aBc-123"
   Parsed: 12.34.56.ABC123
 
-[PASS] File: output/cpu2/queue/id:000057,src:000001,time:1750,execs:1075,op:ext_UI,pos:0
-  Input : "01002345"
-  Parsed: 01.00.23.45
+[PASS] File: output/cpu2/queue/id:000031,src:000001,time:472,execs:235,op:flip1,pos:1
+  Input : "08.00.00"
+  Parsed: 08.00.00
 
-[PASS] File: output/cpu2/queue/id:000070,src:000001,time:2342,execs:1379,op:havoc,rep:2
-  Input : "0823450110010045"
-  Parsed: 08.23.45.0110010045
+[PASS] File: output/cpu2/queue/id:000078,src:000001,time:2969,execs:2052,op:havoc,rep:15
+  Input : "0555555555555555"
+  Parsed: 05.55.55.5555555555
 
-[PASS] File: output/cpu2/queue/id:000077,src:000001,time:2624,execs:1518,op:havoc,rep:1
-  Input : "0402345"
-  Parsed: 04.02.34.5
+[PASS] File: output/cpu2/queue/id:000103,src:000001,time:4244,execs:2945,op:havoc,rep:1
+  Input : "20.00.00"
+  Parsed: 20.00.00
 
-[PASS] File: output/cpu2/queue/id:000078,src:000001,time:2665,execs:1528,op:havoc,rep:4,+cov
-  Input : "0101.2345L2345"
-  Parsed: 01.01.23.45L2345
+[PASS] File: output/cpu2/queue/id:000123,src:000001,time:5255,execs:3631,op:havoc,rep:3
+  Input : "7700.00.H0"
+  Parsed: 77.00.00.H0
 
-[PASS] File: output/cpu2/queue/id:000091,src:000001,time:3253,execs:1871,op:havoc,rep:1
-  Input : "345002345"
-  Parsed: 34.50.02.345
+[PASS] File: output/cpu2/queue/id:000146,src:000001,time:6681,execs:4770,op:havoc,rep:3
+  Input : "03.02340"
+  Parsed: 03.02.34.0
 
-[PASS] File: output/cpu2/queue/id:000148,src:000001,time:6930,execs:5147,op:havoc,rep:2
-  Input : "992345.."
-  Parsed: 99.23.45
+[PASS] File: output/cpu2/queue/id:000153,src:000001,time:7367,execs:5549,op:havoc,rep:4
+  Input : "0100000.34.56-EXTEN0"
+  Parsed: 01.00.00.03456EXTEN0
 
-[PASS] File: output/cpu2/queue/id:000191,src:000001,time:11828,execs:10646,op:havoc,rep:4
-  Input : "400824:"
-  Parsed: 40.08.24
+[PASS] File: output/cpu2/queue/id:000159,src:000001,time:8131,execs:6465,op:havoc,rep:8,+cov
+  Input : "011110 1111O0111N"
+  Parsed: 01.11.10.1111O0111N
 
-[PASS] File: output/cpu2/queue/id:000194,src:000001,time:12680,execs:11755,op:havoc,rep:7
-  Input : "2352312.34.56.EXT1235N"
-  Parsed: 23.52.31.23456EXT1235N
+[PASS] File: output/cpu2/queue/id:000173,src:000001,time:10201,execs:9134,op:havoc,rep:3
+  Input : "10.00.03\000"
+  Parsed: 10.00.03
 
-[PASS] File: output/cpu2/queue/id:000195,src:000001,time:12740,execs:11798,op:havoc,rep:6
-  Input : "01001004 y34l"
-  Parsed: 01.00.10.04Y34L
+[PASS] File: output/cpu2/queue/id:000185,src:000001,time:12415,execs:12085,op:havoc,rep:2,+cov
+  Input : "01.00.00..00"
+  Parsed: 01.00.00.00
 
-[PASS] File: output/cpu2/queue/id:000199,src:000001,time:13049,execs:12093,op:havoc,rep:12
-  Input : "826682666.O6.O"
-  Parsed: 82.66.82.666O6O
+[PASS] File: output/cpu2/queue/id:000197,src:000001,time:14260,execs:14484,op:havoc,rep:2
+  Input : "5555555.00.55500.00.00"
+  Parsed: 55.55.55.500555000000
 
-[PASS] File: output/cpu2/queue/id:000200,src:000001,time:13086,execs:12109,op:havoc,rep:16
-  Input : "2223456A---B...C ::3 32"
-  Parsed: 22.23.45.6ABC332
+[PASS] File: output/cpu2/queue/id:000201,src:000001,time:15570,execs:16371,op:havoc,rep:14
+  Input : "07007034 5 60"
+  Parsed: 07.00.70.34560
 
-[PASS] File: output/cpu2/queue/id:000205,src:000001,time:13943,execs:13268,op:havoc,rep:4
-  Input : "444456ABCDEFGHIJKLMN4"
-  Parsed: 44.44.56.ABCDEFGHIJKLMN4
+[PASS] File: output/cpu2/queue/id:000206,src:000001,time:16242,execs:17202,op:havoc,rep:4
+  Input : "12.34.55d66660"
+  Parsed: 12.34.55.D66660
 
-[PASS] File: output/cpu2/queue/id:000215,src:000001,time:15650,execs:15473,op:havoc,rep:9
-  Input : "34444444444444444444j"
-  Parsed: 34.44.44.44444444444444J
+[PASS] File: output/cpu2/queue/id:000213,src:000001,time:18040,execs:19698,op:havoc,rep:13,+cov
+  Input : "222222 222222___h_22222220 X-"
+  Parsed: 22.22.22.222222H22222220X
 
-[PASS] File: output/cpu2/queue/id:000216,src:000001,time:15841,execs:15739,op:havoc,rep:9
-  Input : "1049944444   00p"
-  Parsed: 10.49.94.444400P
+[PASS] File: output/cpu2/queue/id:000230,src:000001,time:23297,execs:27136,op:havoc,rep:12
+  Input : "5550.00."
+  Parsed: 55.50.00
 
-[PASS] File: output/cpu2/queue/id:000228,src:000001,time:20914,execs:23418,op:havoc,rep:9
-  Input : "055555I////////////555I5555.5"
-  Parsed: 05.55.55.I555I55555
+[PASS] File: output/cpu2/queue/id:000235,src:000001,time:26668,execs:32262,op:havoc,rep:7
+  Input : "32222220....."
+  Parsed: 32.22.22.20
 
-[PASS] File: output/cpu2/queue/id:000262,src:000001,time:33683,execs:42450,op:havoc,rep:8
-  Input : "2992222 ..."
-  Parsed: 29.92.22.2
+[PASS] File: output/cpu2/queue/id:000246,src:000001,time:29626,execs:36490,op:havoc,rep:9
+  Input : "222220....345_6789012C456.."
+  Parsed: 22.22.20.3456789012C456
 
-[PASS] File: output/cpu2/queue/id:000263,src:000001,time:33849,execs:42665,op:havoc,rep:2
-  Input : "012345            "
-  Parsed: 01.23.45
+[PASS] File: output/cpu2/queue/id:000248,src:000001,time:30121,execs:37184,op:havoc,rep:5
+  Input : "08.08.00xxxxx0xxxxxx"
+  Parsed: 08.08.00.XXXXX0XXXXXX
 
-[PASS] File: output/cpu2/queue/id:000266,src:000001,time:36239,execs:46351,op:havoc,rep:4
-  Input : "450045230__450045230______________"
-  Parsed: 45.00.45.230450045230
+[PASS] File: output/cpu2/queue/id:000249,src:000001,time:30857,execs:38317,op:havoc,rep:2,+cov
+  Input : "7034 5 6"
+  Parsed: 70.34.56
 
-[PASS] File: output/cpu2/queue/id:000273,src:000001,time:38333,execs:49360,op:havoc,rep:11
-  Input : "22222222222//3///"
-  Parsed: 22.22.22.222223
+[PASS] File: output/cpu2/queue/id:000270,src:000001,time:41428,execs:54094,op:havoc,rep:8
+  Input : "222220..."
+  Parsed: 22.22.20
 
-[PASS] File: output/cpu2/queue/id:000278,sync:main,src:000160
-  Input : "434500_123456ABC-"
-  Parsed: 43.45.00.123456ABC
+[PASS] File: output/cpu2/queue/id:000275,sync:main,src:000161,+cov
+  Input : "1 2 3404.00.00"
+  Parsed: 12.34.04.0000
 
-[PASS] File: output/cpu2/queue/id:000301,src:000290,time:42742,execs:54927,op:havoc,rep:4
-  Input : "1212.34.4_56 [AAAAAAAAJAAEC] "
-  Parsed: 12.12.34.456AAAAAAAAJAAEC
+[PASS] File: output/cpu2/queue/id:000276,sync:main,src:000168,+cov
+  Input : "11 2 3 2 3.00"
+  Parsed: 11.23.23.00
 
-[PASS] File: output/cpu2/queue/id:000306,src:000290,time:43876,execs:56515,op:havoc,rep:7
-  Input : "3373444_______________________________l_____"
-  Parsed: 33.73.44.4L
+[PASS] File: output/cpu2/queue/id:000278,sync:main,src:000189,+cov
+  Input : "12-34500:00.00"
+  Parsed: 12.34.50.00000
 
-[PASS] File: output/cpu2/queue/id:000317,src:000013,time:50275,execs:65466,op:havoc,rep:4
-  Input : "103122456ex3122456ex"
-  Parsed: 10.31.22.456EX3122456EX
+[PASS] File: output/cpu2/queue/id:000283,sync:main,src:000211
+  Input : "4444444__00.00_00.0000"
+  Parsed: 44.44.44.40000000000
 
-[PASS] File: output/cpu2/queue/id:000320,src:000013,time:50596,execs:65852,op:havoc,rep:1
-  Input : "123456extVAL73444______l_______"
-  Parsed: 12.34.56.EXTVAL73444L
+[PASS] File: output/cpu2/queue/id:000288,sync:main,src:000217
+  Input : "06.00.00_____"
+  Parsed: 06.00.00
 
-[PASS] File: output/cpu2/queue/id:000321,src:000013,time:51520,execs:67279,op:havoc,rep:2
-  Input : "1123456extAL123459______4"
-  Parsed: 11.23.45.6EXTAL1234594
+[PASS] File: output/cpu2/queue/id:000289,sync:main,src:000219
+  Input : "02.00.00//"
+  Parsed: 02.00.00
 
-[PASS] File: output/cpu2/queue/id:000322,src:000013,time:51843,execs:67766,op:havoc,rep:1
-  Input : "123456ex____tVAL"
-  Parsed: 12.34.56.EXTVAL
+[PASS] File: output/cpu2/queue/id:000290,sync:main,src:000222
+  Input : "12.00.00xyz"
+  Parsed: 12.00.00.XYZ
 
-[PASS] File: output/cpu2/queue/id:000323,src:000013,time:52371,execs:68571,op:havoc,rep:3
-  Input : "123456ext00               01       VAL"
-  Parsed: 12.34.56.EXT0001VAL
+[PASS] File: output/cpu2/queue/id:000293,src:000007,time:43243,execs:55348,op:havoc,rep:2
+  Input : "123356[A_B.C________________]"
+  Parsed: 12.33.56.ABC
 
-[PASS] File: output/cpu2/queue/id:000325,src:000013,time:53376,execs:70124,op:havoc,rep:1
-  Input : "123456extVVVVVVVVVVVAL"
-  Parsed: 12.34.56.EXTVVVVVVVVVVVAL
+[PASS] File: output/cpu2/queue/id:000296,src:000007,time:43409,execs:55464,op:havoc,rep:1
+  Input : "123123456[A_B.C]456[A_B.C]"
+  Parsed: 12.31.23.456ABC456ABC
 
-[PASS] File: output/cpu2/queue/id:000335,src:000293,time:62513,execs:81312,op:havoc,rep:3,+cov
-  Input : "0 6 7 0 33470334705"
-  Parsed: 06.70.33.470334705
+[PASS] File: output/cpu2/queue/id:000297,src:000007,time:43476,execs:55529,op:havoc,rep:1
+  Input : "123456[A_BBBBBBB.C]"
+  Parsed: 12.34.56.ABBBBBBBC
 
-[PASS] File: output/cpu2/queue/id:000352,src:000191,time:71368,execs:93714,op:havoc,rep:2
-  Input : "400824:080824:24:"
-  Parsed: 40.08.24.08082424
+[PASS] File: output/cpu2/queue/id:000298,src:000007,time:43509,execs:55538,op:havoc,rep:1
+  Input : "123456[1 2 3 2 3.0000.00.A_B.C]"
+  Parsed: 12.34.56.12323000000ABC
 
-[PASS] File: output/cpu2/queue/id:000359,src:000262,time:75880,execs:97568,op:havoc,rep:3
-  Input : "2992222                                ..."
-  Parsed: 29.92.22.2
+[PASS] File: output/cpu2/queue/id:000301,src:000007,time:43794,execs:55856,op:havoc,rep:1
+  Input : "123456[A____________0_B.C]"
+  Parsed: 12.34.56.A0BC
 
-[PASS] File: output/cpu2/queue/id:000377,src:000262,time:89330,execs:115622,op:havoc,rep:1
-  Input : "2992222 .................................."
-  Parsed: 29.92.22.2
+[PASS] File: output/cpu2/queue/id:000303,src:000007,time:43894,execs:55930,op:havoc,rep:2
+  Input : "123456[A______i__B.C]"
+  Parsed: 12.34.56.AIBC
 
-[PASS] File: output/cpu2/queue/id:000386,src:000352,time:102043,execs:132585,op:havoc,rep:1
-  Input : "400824:0808:4:24:"
-  Parsed: 40.08.24.0808424
+[PASS] File: output/cpu2/queue/id:000306,src:000007,time:44321,execs:56486,op:havoc,rep:1
+  Input : "123456///////////////[A_B.C]"
+  Parsed: 12.34.56.ABC
 
-[PASS] File: output/cpu2/queue/id:000391,src:000386,time:106482,execs:138622,op:havoc,rep:2
-  Input : "400824:1:::::::::4:24:"
-  Parsed: 40.08.24.1424
+[PASS] File: output/cpu2/queue/id:000308,src:000007,time:44435,execs:56577,op:havoc,rep:1
+  Input : "123456[A_B.C              34 5 0.00]"
+  Parsed: 12.34.56.ABC345000
 
-[PASS] File: output/cpu2/queue/id:000392,src:000386,time:106681,execs:138900,op:havoc,rep:1
-  Input : "400824:024:0808:4:24:808:4:24:"
-  Parsed: 40.08.24.0240808424808424
+[PASS] File: output/cpu2/queue/id:000309,src:000007,time:44731,execs:57017,op:havoc,rep:1
+  Input : "123456[A_________________B.C]"
+  Parsed: 12.34.56.ABC
 
-[PASS] File: output/cpu2/queue/id:000393,src:000386,time:106775,execs:139011,op:havoc,rep:1
-  Input : "400824:0:::::::::::::::::::::::::::4:24:"
-  Parsed: 40.08.24.0424
+[PASS] File: output/cpu2/queue/id:000315,src:000007,time:45834,execs:58486,op:havoc,rep:1
+  Input : "123456[A________________________________B.C]"
+  Parsed: 12.34.56.ABC
 
-[PASS] File: output/cpu2/queue/id:000394,src:000386,time:106942,execs:139235,op:havoc,rep:2
-  Input : "400824:0:::::::::::::::::: :::::::::::4:24:"
-  Parsed: 40.08.24.0424
+[PASS] File: output/cpu2/queue/id:000316,src:000007,time:46268,execs:59142,op:havoc,rep:3
+  Input : "123456[ iB.C]7034 5 "
+  Parsed: 12.34.56.IBC70345
 
-[PASS] File: output/cpu2/queue/id:000395,src:000386,time:107039,execs:139349,op:havoc,rep:2
-  Input : "400824:0808:4:::::::24:0808:4:24:"
-  Parsed: 40.08.24.08084240808424
+[PASS] File: output/cpu2/queue/id:000318,src:000007,time:46743,execs:59810,op:havoc,rep:3
+  Input : "123456ZA_B.23456A_B.C[A_B.CC]"
+  Parsed: 12.34.56.ZAB23456ABCABCC
 
-[PASS] File: output/cpu2/queue/id:000396,src:000386,time:110278,execs:144582,op:havoc,rep:1
-  Input : "400824:0808:4:::::::::::::::::::::::::::::::::24:"
-  Parsed: 40.08.24.0808424
+[PASS] File: output/cpu2/queue/id:000321,src:000007,time:47668,execs:61154,op:havoc,rep:3
+  Input : "123456[A _______XXXXXXXXXXX___________B.C]"
+  Parsed: 12.34.56.AXXXXXXXXXXXBC
+
+[PASS] File: output/cpu2/queue/id:000322,src:000007,time:47964,execs:61587,op:havoc,rep:2
+  Input : "123456[A_B..................U.C]"
+  Parsed: 12.34.56.ABUC
+
+[PASS] File: output/cpu2/queue/id:000323,src:000007,time:48026,execs:61639,op:havoc,rep:2
+  Input : "120156[A_B:C]"
+  Parsed: 12.01.56.ABC
+
+[PASS] File: output/cpu2/queue/id:000324,src:000007,time:49005,execs:63141,op:havoc,rep:3
+  Input : "123456[A_________________________________B.00BC]"
+  Parsed: 12.34.56.AB00BC
+
+[PASS] File: output/cpu2/queue/id:000329,src:000016,time:53303,execs:69232,op:havoc,rep:1,+cov
+  Input : "1 2 34 586"
+  Parsed: 12.34.58.6
+
+[PASS] File: output/cpu2/queue/id:000330,src:000016,time:53384,execs:69310,op:havoc,rep:1,+cov
+  Input : "1 2 3 2 34 5 64 5 6"
+  Parsed: 12.32.34.56456
+
+[PASS] File: output/cpu2/queue/id:000338,src:000016,time:55889,execs:72930,op:havoc,rep:2
+  Input : "1 2 3  2 3 2 362 36"
+  Parsed: 12.32.32.36236
+
+[PASS] File: output/cpu2/queue/id:000348,src:000323,time:66285,execs:86658,op:havoc,rep:1
+  Input : "12015656[A_B:C][A_B:C]"
+  Parsed: 12.01.56.56ABCABC
+
+[PASS] File: output/cpu2/queue/id:000360,src:000322,time:75503,execs:97396,op:havoc,rep:1
+  Input : "123456[A_B.................................................U.C]"
+  Parsed: 12.34.56.ABUC
+
+[PASS] File: output/cpu2/queue/id:000371,src:000364,time:86841,execs:113773,op:havoc,rep:1
+  Input : "444444_"
+  Parsed: 44.44.44
+
+[PASS] File: output/cpu2/queue/id:000376,src:000198,time:97282,execs:128812,op:havoc,rep:2
+  Input : "01111111111: 2                                34 5"
+  Parsed: 01.11.11.111112345
+
+[PASS] File: output/cpu2/queue/id:000380,src:000282,time:101796,execs:135334,op:havoc,rep:8
+  Input : "06.00.00__"
+  Parsed: 06.00.00
+
+[PASS] File: output/cpu2/queue/id:000412,src:000358,time:142135,execs:191740,op:havoc,rep:4
+  Input : "120154_A_B:::::1::::"
+  Parsed: 12.01.54.AB1
+
+[PASS] File: output/cpu2/queue/id:000413,src:000358,time:143042,execs:193145,op:havoc,rep:4
+  Input : "120154[A_B:::::::::::]-------------00:::::::::::::3  2 3_"
+  Parsed: 12.01.54.AB00323
+
+[PASS] File: output/cpu2/queue/id:000414,src:000358,time:147686,execs:200491,op:havoc,rep:6
+  Input : "120154[A_B::::G_B:::::::::C::::::::::::::::::::]::::::O_"
+  Parsed: 12.01.54.ABGBCO
+
+[PASS] File: output/cpu2/queue/id:000432,src:000360,time:390315,execs:541108,op:havoc,rep:2
+  Input : "123456[A_B..........................................0_0______3.0__0.0.00.00.......U.C]"
+  Parsed: 12.34.56.AB0030000000UC
+
+[PASS] File: output/cpu2/queue/id:000433,src:000360,time:390424,execs:541222,op:havoc,rep:4
+  Input : "123456[A_B......................n.............................................U.......................................U.C]"
+  Parsed: 12.34.56.ABNUUC
+
+[PASS] File: output/cpu2/queue/id:000435,src:000433,time:416197,execs:577022,op:havoc,rep:2
+  Input : "123456[A_B......................n..........................2 3 2................... 2 3  2 3 2 ............................U.C]"
+  Parsed: 12.34.56.ABN23223232UC
+
+[PASS] File: output/cpu2/queue/id:000451,sync:main,src:000409
+  Input : "123456[123B10.00::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::3:56K8901]"
+  Parsed: 12.34.56.123B1000356K8901
+
+[PASS] File: output/cpu2/queue/id:000452,sync:main,src:000410
+  Input : "123456[123B10.00::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::3:56K8901]"
+  Parsed: 12.34.56.123B1000356K8901
+
+[PASS] File: output/cpu2/queue/id:000465,sync:main,src:000466
+  Input : "\239\187\19111 2 3 2 3 2 3 2   .                 "
+  Parsed: 11.23.23.232
+
+[PASS] File: output/cpu2/queue/id:000466,sync:main,src:000467
+  Input : "01_______________________________________________________________________________________________________________00.00D00"
+  Parsed: 01.00.00.D00
+
+[PASS] File: output/cpu2/queue/id:000467,src:000297,time:3701788,execs:4771668,op:havoc,rep:2
+  Input : "123456[A________________________________________________________________________________________________________BBBB6BB.C]"
+  Parsed: 12.34.56.ABBBB6BBC
 
 [PASS] File: output/main/queue/id:000000,time:0,execs:0,orig:seed_1.txt
-  Input : "010000"
-  Parsed: 01.00.00
+  Input : "12.34.56"
+  Parsed: 12.34.56
 
 [PASS] File: output/main/queue/id:000002,time:0,execs:0,orig:seed_11.txt
-  Input : "0110010045"
-  Parsed: 01.10.01.0045
+  Input : "12_34-56"
+  Parsed: 12.34.56
 
-[PASS] File: output/main/queue/id:000008,time:0,execs:0,orig:seed_17.txt
-  Input : "123456A---B...C:::D"
-  Parsed: 12.34.56.ABCD
-
-[PASS] File: output/main/queue/id:000010,time:0,execs:0,orig:seed_19.txt
-  Input : "123456[12345678]-(90123456)"
-  Parsed: 12.34.56.1234567890123456
+[PASS] File: output/main/queue/id:000007,time:0,execs:0,orig:seed_16.txt
+  Input : "123456[A_B.C]"
+  Parsed: 12.34.56.ABC
 
 [PASS] File: output/main/queue/id:000011,time:0,execs:0,orig:seed_2.txt
-  Input : "999999"
+  Input : "99-99-99"
   Parsed: 99.99.99
 
-[PASS] File: output/main/queue/id:000013,time:0,execs:0,orig:seed_21.txt
-  Input : "123456extVAL"
-  Parsed: 12.34.56.EXTVAL
+[PASS] File: output/main/queue/id:000013,time:0,execs:0,orig:seed_3.txt
+  Input : "013456"
+  Parsed: 01.34.56
 
-[PASS] File: output/main/queue/id:000014,time:0,execs:0,orig:seed_3.txt
-  Input : "12.34.56.EXT123"
-  Parsed: 12.34.56.EXT123
+[PASS] File: output/main/queue/id:000014,time:0,execs:0,orig:seed_4.txt
+  Input : "12-3456"
+  Parsed: 12.34.56
 
-[PASS] File: output/main/queue/id:000015,time:0,execs:0,orig:seed_4.txt
-  Input : "12-34_56 [ABC] (123)"
+[PASS] File: output/main/queue/id:000015,time:0,execs:0,orig:seed_5.txt
+  Input : "1234.56"
+  Parsed: 12.34.56
+
+[PASS] File: output/main/queue/id:000016,time:0,execs:0,orig:seed_6.txt
+  Input : "1 2 34 5 6"
+  Parsed: 12.34.56
+
+[PASS] File: output/main/queue/id:000017,time:0,execs:0,orig:seed_7.txt
+  Input : "12.34.56-EXTENSI0N"
+  Parsed: 12.34.56.EXTENSI0N
+
+[PASS] File: output/main/queue/id:000018,time:0,execs:0,orig:seed_8.txt
+  Input : "123456[A1](B2)"
+  Parsed: 12.34.56.A1B2
+
+[PASS] File: output/main/queue/id:000019,time:0,execs:0,orig:seed_9.txt
+  Input : "123456-aBc-123"
   Parsed: 12.34.56.ABC123
 
-[PASS] File: output/main/queue/id:000056,src:000001,time:1702,execs:1067,op:ext_UI,pos:0
-  Input : "01002345"
-  Parsed: 01.00.23.45
+[PASS] File: output/main/queue/id:000028,src:000001,time:369,execs:213,op:flip1,pos:0
+  Input : "80.00.00"
+  Parsed: 80.00.00
 
-[PASS] File: output/main/queue/id:000090,src:000001,time:3210,execs:1838,op:havoc,rep:13
-  Input : "22222222222222222322"
-  Parsed: 22.22.22.22222222222322
+[PASS] File: output/main/queue/id:000073,src:000001,time:2638,execs:1658,op:ext_UI,pos:0
+  Input : "0100.00.00"
+  Parsed: 01.00.00.00
 
-[PASS] File: output/main/queue/id:000119,src:000001,time:4725,execs:2894,op:havoc,rep:6
-  Input : "3456.02345"
-  Parsed: 34.56.02.345
+[PASS] File: output/main/queue/id:000089,src:000001,time:3392,execs:2104,op:havoc,rep:2
+  Input : "80.00000"
+  Parsed: 80.00.00.0
 
-[PASS] File: output/main/queue/id:000123,src:000001,time:5055,execs:3238,op:havoc,rep:1
-  Input : "2002345"
-  Parsed: 20.02.34.5
+[PASS] File: output/main/queue/id:000104,src:000001,time:4334,execs:2929,op:havoc,rep:1
+  Input : "0100.00."
+  Parsed: 01.00.00
 
-[PASS] File: output/main/queue/id:000124,src:000001,time:5094,execs:3249,op:havoc,rep:13
-  Input : "430013SX34c"
-  Parsed: 43.00.13.SX34C
+[PASS] File: output/main/queue/id:000112,src:000001,time:5027,execs:3687,op:havoc,rep:1
+  Input : "12-345600.00.00"
+  Parsed: 12.34.56.000000
 
-[PASS] File: output/main/queue/id:000126,src:000001,time:5260,execs:3424,op:havoc,rep:4
-  Input : "03.023994545 5"
-  Parsed: 03.02.39.945455
+[PASS] File: output/main/queue/id:000128,src:000001,time:7128,execs:6392,op:havoc,rep:2,+cov
+  Input : "12-345600.00.00 00000.00.00"
+  Parsed: 12.34.56.000000000000000
 
-[PASS] File: output/main/queue/id:000135,src:000001,time:5811,execs:3874,op:havoc,rep:9
-  Input : "202345/D1"
-  Parsed: 20.23.45.D1
+[PASS] File: output/main/queue/id:000146,src:000001,time:9502,execs:9307,op:havoc,rep:2,+cov
+  Input : "34 34 5 6005 600"
+  Parsed: 34.34.56.005600
 
-[PASS] File: output/main/queue/id:000160,src:000001,time:9356,execs:8044,op:havoc,rep:15,+cov
-  Input : "434500_123456ABC-"
-  Parsed: 43.45.00.123456ABC
+[PASS] File: output/main/queue/id:000161,src:000001,time:14227,execs:16127,op:havoc,rep:2,+cov
+  Input : "1 2 3404.00.00"
+  Parsed: 12.34.04.0000
 
-[PASS] File: output/main/queue/id:000162,src:000001,time:9524,execs:8209,op:havoc,rep:14
-  Input : "11234524.56.E"
-  Parsed: 11.23.45.2456E
+[PASS] File: output/main/queue/id:000168,src:000001,time:16628,execs:19672,op:havoc,rep:2,+cov
+  Input : "11 2 3 2 3.00"
+  Parsed: 11.23.23.00
 
-[PASS] File: output/main/queue/id:000175,src:000001,time:11466,execs:10742,op:havoc,rep:12
-  Input : "123456AB"
-  Parsed: 12.34.56.AB
+[PASS] File: output/main/queue/id:000169,src:000001,time:16694,execs:19721,op:havoc,rep:2,+cov
+  Input : "01.0000..00"
+  Parsed: 01.00.00.00
 
-[PASS] File: output/main/queue/id:000212,src:000001,time:19423,execs:21621,op:havoc,rep:12
-  Input : "9999999999:"
-  Parsed: 99.99.99.9999
+[PASS] File: output/main/queue/id:000183,src:000001,time:21734,execs:26850,op:havoc,rep:2
+  Input : "11 2 3 2 30......0.00.00"
+  Parsed: 11.23.23.000000
 
-[PASS] File: output/main/queue/id:000226,src:000001,time:24112,execs:28549,op:havoc,rep:7
-  Input : "077765...023457__"
-  Parsed: 07.77.65.023457
+[PASS] File: output/main/queue/id:000188,src:000001,time:23294,execs:29125,op:havoc,rep:2
+  Input : "0100.00D00"
+  Parsed: 01.00.00.D00
 
-[PASS] File: output/main/queue/id:000261,sync:cpu2,src:000200
-  Input : "2223456A---B...C ::3 32"
-  Parsed: 22.23.45.6ABC332
+[PASS] File: output/main/queue/id:000189,src:000001,time:23882,execs:30015,op:havoc,rep:2,+cov
+  Input : "12-34500:00.00"
+  Parsed: 12.34.50.00000
 
-[PASS] File: output/main/queue/id:000262,sync:cpu2,src:000205
-  Input : "444456ABCDEFGHIJKLMN4"
-  Parsed: 44.44.56.ABCDEFGHIJKLMN4
+[PASS] File: output/main/queue/id:000191,src:000001,time:24586,execs:31031,op:havoc,rep:2
+  Input : "0400.00.0...000"
+  Parsed: 04.00.00.0000
 
-[PASS] File: output/main/queue/id:000263,sync:cpu2,src:000216
-  Input : "1049944444   00p"
-  Parsed: 10.49.94.444400P
+[PASS] File: output/main/queue/id:000198,src:000001,time:27363,execs:35150,op:havoc,rep:2
+  Input : "8888888\000"
+  Parsed: 88.88.88.8
 
-[PASS] File: output/main/queue/id:000268,sync:cpu2,src:000228
-  Input : "055555I////////////555I5555.5"
-  Parsed: 05.55.55.I555I55555
+[PASS] File: output/main/queue/id:000211,src:000001,time:32256,execs:42364,op:havoc,rep:2,+cov
+  Input : "4444444__00.00_00.0000"
+  Parsed: 44.44.44.40000000000
 
-[PASS] File: output/main/queue/id:000285,sync:cpu2,src:000263
-  Input : "012345            "
-  Parsed: 01.23.45
+[PASS] File: output/main/queue/id:000217,src:000001,time:36848,execs:49267,op:havoc,rep:2
+  Input : "06.00.00_____"
+  Parsed: 06.00.00
 
-[PASS] File: output/main/queue/id:000286,sync:cpu2,src:000266
-  Input : "450045230__450045230______________"
-  Parsed: 45.00.45.230450045230
+[PASS] File: output/main/queue/id:000219,src:000001,time:38035,execs:51017,op:havoc,rep:2
+  Input : "02.00.00//"
+  Parsed: 02.00.00
 
-[PASS] File: output/main/queue/id:000300,src:000160,time:46790,execs:60106,op:havoc,rep:2
-  Input : "3434500_1234                      56ABC-"
-  Parsed: 34.34.50.0123456ABC
+[PASS] File: output/main/queue/id:000222,src:000001,time:38581,execs:51745,op:havoc,rep:2
+  Input : "12.00.00xyz"
+  Parsed: 12.00.00.XYZ
 
-[PASS] File: output/main/queue/id:000306,src:000160,time:47422,execs:60829,op:havoc,rep:1
-  Input : "434500_123456AB______002C-"
-  Parsed: 43.45.00.123456AB002C
+[PASS] File: output/main/queue/id:000250,sync:cpu2,src:000201
+  Input : "07007034 5 60"
+  Parsed: 07.00.70.34560
 
-[PASS] File: output/main/queue/id:000307,src:000160,time:47685,execs:61216,op:havoc,rep:4
-  Input : "4434510_12oooooooo456C-"
-  Parsed: 44.34.51.012OOOOOOOO456C
+[PASS] File: output/main/queue/id:000253,sync:cpu2,src:000206
+  Input : "12.34.55d66660"
+  Parsed: 12.34.55.D66660
 
-[PASS] File: output/main/queue/id:000310,src:000160,time:48437,execs:62248,op:havoc,rep:1
-  Input : "434500_123456AB...................C-"
-  Parsed: 43.45.00.123456ABC
+[PASS] File: output/main/queue/id:000255,sync:cpu2,src:000213
+  Input : "222222 222222___h_22222220 X-"
+  Parsed: 22.22.22.222222H22222220X
 
-[PASS] File: output/main/queue/id:000312,src:000160,time:48856,execs:62815,op:havoc,rep:2
-  Input : "4344500_123oooooooC-"
-  Parsed: 43.44.50.0123OOOOOOOC
+[PASS] File: output/main/queue/id:000273,sync:cpu2,src:000248
+  Input : "08.08.00xxxxx0xxxxxx"
+  Parsed: 08.08.00.XXXXX0XXXXXX
 
-[PASS] File: output/main/queue/id:000317,src:000160,time:52869,execs:69070,op:havoc,rep:3,+cov
-  Input : "3345 0 02345_123456ABC-"
-  Parsed: 33.45.00.2345123456ABC
+[PASS] File: output/main/queue/id:000297,src:000009,time:43634,execs:55945,op:havoc,rep:1
+  Input : "123456[123456781 2 34 5 ]"
+  Parsed: 12.34.56.1234567812345
 
-[PASS] File: output/main/queue/id:000322,src:000212,time:55053,execs:71802,op:havoc,rep:2
-  Input : "9999999999:999:9:999:"
-  Parsed: 99.99.99.99999999999
+[PASS] File: output/main/queue/id:000298,src:000009,time:43761,execs:56101,op:havoc,rep:3
+  Input : "123456[123122 L 2 3.0067]"
+  Parsed: 12.34.56.123122L230067
 
-[PASS] File: output/main/queue/id:000365,src:000008,time:77637,execs:103053,op:havoc,rep:3
-  Input : "1234523456A--5-B...C:::D-B...C:::D"
-  Parsed: 12.34.52.3456A5BCDBCD
+[PASS] File: output/main/queue/id:000307,src:000009,time:45720,execs:58818,op:havoc,rep:2
+  Input : "123456[12.45678901--------------234567]"
+  Parsed: 12.34.56.1245678901234567
 
-[PASS] File: output/main/queue/id:000367,src:000015,time:78056,execs:103629,op:havoc,rep:1
-  Input : "12-34_56                               [ABC] (123)"
-  Parsed: 12.34.56.ABC123
+[PASS] File: output/main/queue/id:000313,src:000009,time:49150,execs:64024,op:havoc,rep:3
+  Input : "123456[1234567090                              234567]"
+  Parsed: 12.34.56.1234567090234567
 
-[PASS] File: output/main/queue/id:000369,src:000015,time:78308,execs:103949,op:havoc,rep:1
-  Input : "12-3434_56 [ABC] _56 [ABC] (123)"
-  Parsed: 12.34.34.56ABC56ABC123
+[PASS] File: output/main/queue/id:000319,src:000016,time:52128,execs:68321,op:havoc,rep:1,+cov
+  Input : "1 2 3 2 4 5 6"
+  Parsed: 12.32.45.6
 
-[PASS] File: output/main/queue/id:000384,src:000283,time:95164,execs:128866,op:havoc,rep:1
-  Input : "055555I////////8///////////////////////////////////////// /00"
-  Parsed: 05.55.55.I800
+[PASS] File: output/main/queue/id:000320,src:000016,time:52178,execs:68349,op:havoc,rep:1,+cov
+  Input : "1 2 34 34 "
+  Parsed: 12.34.34
 
-[PASS] File: output/main/queue/id:000388,src:000365,time:100034,execs:135091,op:havoc,rep:1
-  Input : "1234523456A--5-B...C:::D-B...C::9D"
-  Parsed: 12.34.52.3456A5BCDBC9D
+[PASS] File: output/main/queue/id:000322,src:000016,time:52353,execs:68527,op:havoc,rep:1,+cov
+  Input : "1 2 1 2 34 534 5 6"
+  Parsed: 12.12.34.53456
 
-[PASS] File: output/main/queue/id:000390,src:000365,time:100172,execs:135227,op:havoc,rep:1
-  Input : "1234523456A--5-B...C:::D-B...C:::::::::::::::::::::::::::::::::::D"
-  Parsed: 12.34.52.3456A5BCDBCD
+[PASS] File: output/main/queue/id:000327,src:000016,time:52900,execs:69169,op:havoc,rep:2,+cov
+  Input : "11 2 3 45 "
+  Parsed: 11.23.45
 
-[PASS] File: output/main/queue/id:000423,src:000012,time:154377,execs:217521,op:havoc,rep:3
-  Input : "121456ABCDEFGABCK:MNOPQ"
-  Parsed: 12.14.56.ABCDEFGABCKMNOPQ
+[PASS] File: output/main/queue/id:000328,src:000016,time:53160,execs:69539,op:havoc,rep:2
+  Input : "1 2 3 2 36_"
+  Parsed: 12.32.36
+
+[PASS] File: output/main/queue/id:000329,src:000016,time:53699,execs:70355,op:havoc,rep:2
+  Input : "67890123:5"
+  Parsed: 67.89.01.235
+
+[PASS] File: output/main/queue/id:000330,src:000016,time:54392,execs:71414,op:havoc,rep:1
+  Input : "1 2 34 5                                 6"
+  Parsed: 12.34.56
+
+[PASS] File: output/main/queue/id:000333,src:000016,time:60323,execs:80712,op:havoc,rep:1
+  Input : "1 2 34 5 6RRRRRRRRRRRRRRRR"
+  Parsed: 12.34.56.RRRRRRRRRRRRRRRR
+
+[PASS] File: output/main/queue/id:000368,src:000168,time:87282,execs:118427,op:havoc,rep:2
+  Input : "11 2 3 2 3 2 3 2                                3.00.00"
+  Parsed: 11.23.23.23230000
+
+[PASS] File: output/main/queue/id:000382,src:000327,time:105168,execs:144625,op:havoc,rep:1
+  Input : "11 2 3 45.. "
+  Parsed: 11.23.45
+
+[PASS] File: output/main/queue/id:000388,src:000188,time:122047,execs:169313,op:havoc,rep:1
+  Input : "0100.00D0::0"
+  Parsed: 01.00.00.D00
+
+[PASS] File: output/main/queue/id:000393,src:000329,time:126606,execs:175983,op:havoc,rep:1
+  Input : "67890123::::::::::::::::5"
+  Parsed: 67.89.01.235
+
+[PASS] File: output/main/queue/id:000405,src:000392,time:136889,execs:191684,op:havoc,rep:3
+  Input : "123456[123B10.00:::::::::::::::::::::::::::::::::3:5678901]"
+  Parsed: 12.34.56.123B100035678901
+
+[PASS] File: output/main/queue/id:000406,src:000405,time:138810,execs:194714,op:havoc,rep:2
+  Input : "123456[123B10.00::::::::::::::::::::::::::::::::::::::::::::::::::::::::3:56K8901]"
+  Parsed: 12.34.56.123B1000356K8901
+
+[PASS] File: output/main/queue/id:000407,src:000405,time:138982,execs:194945,op:havoc,rep:2
+  Input : "123456[123B10.00:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::300.00901]"
+  Parsed: 12.34.56.123B100030000901
+
+[PASS] File: output/main/queue/id:000408,src:000405,time:139402,execs:195578,op:havoc,rep:1
+  Input : "123456[12::::::::::::::::::::::::::::::3B10.00:::::::::::::::::::::::::::::::::3:5678901]"
+  Parsed: 12.34.56.123B100035678901
+
+[PASS] File: output/main/queue/id:000409,src:000406,time:147299,execs:208071,op:havoc,rep:3
+  Input : "123456[123B10.00::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::3:56K8901]"
+  Parsed: 12.34.56.123B1000356K8901
+
+[PASS] File: output/main/queue/id:000410,src:000406,time:147551,execs:208427,op:havoc,rep:1
+  Input : "123456[123B10.00::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::3:56K8901]"
+  Parsed: 12.34.56.123B1000356K8901
+
+[PASS] File: output/main/queue/id:000418,src:000009,time:166829,execs:237727,op:havoc,rep:2
+  Input : "123456[1________________________________3333333334567]"
+  Parsed: 12.34.56.13333333334567
+
+[PASS] File: output/main/queue/id:000425,src:000217,time:216111,execs:310054,op:havoc,rep:1
+  Input : "06.00.00__"
+  Parsed: 06.00.00
+
+[PASS] File: output/main/queue/id:000429,src:000018,time:239970,execs:343789,op:havoc,rep:1
+  Input : "12123456[A1](B2)3456[A1](B2)"
+  Parsed: 12.12.34.56A1B23456A1B2
+
+[PASS] File: output/main/queue/id:000466,src:000463,time:2792372,execs:3829592,op:havoc,rep:2
+  Input : "\239\187\19111 2 3 2 3 2 3 2   .                 "
+  Parsed: 11.23.23.232
+
+[PASS] File: output/main/queue/id:000467,src:000188,time:2938909,execs:3999638,op:havoc,rep:2
+  Input : "01___________________________________________________________________________________________________________________00.00D00"
+  Parsed: 01.00.00.D00
+
+[PASS] File: output/main/queue/id:000468,sync:cpu2,src:000467
+  Input : "123456[A________________________________________________________________________________________________________BBBB6BB.C]"
+  Parsed: 12.34.56.ABBBB6BBC
 
