@@ -4,8 +4,6 @@ This is where I post signed binaries (tagged git commit with my signature) and a
 
 **For this tag, the function is `lib/domain/hs_code.ml` and the interface `lib/domain/hs_code.mli` at [cptpp-calculator.](https://github.com/nguyenhoangan-monkey/cptpp-calculator/tree/main/lib/domain)**
 
-The commit hash is [insert hash here] and this commit is signed and published on github by nguyenhoangan-monkey (me).
-
 ## How to verify `lib/domain/hs_code.ml`
 
 before commit:
